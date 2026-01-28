@@ -55,17 +55,20 @@ class OpportunityResource extends Resource
                     ->icon('heroicon-o-currency-dollar')
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label(__('Name'))
                             ->required()
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-tag')
                             ->placeholder('New website project'),
                         Forms\Components\Select::make('pipeline_stage_id')
+                            ->label(__('Stage'))
                             ->relationship('pipelineStage', 'name')
                             ->required()
                             ->preload()
                             ->prefixIcon('heroicon-o-view-columns')
                             ->helperText(__('Current stage of this deal in the pipeline.')),
                         Forms\Components\Select::make('company_id')
+                            ->label(__('Company'))
                             ->relationship('company', 'name')
                             ->searchable()
                             ->preload()
@@ -73,21 +76,25 @@ class OpportunityResource extends Resource
                             ->reactive()
                             ->afterStateUpdated(fn (Forms\Set $set) => $set('contact_id', null)),
                         Forms\Components\Select::make('contact_id')
+                            ->label(__('Contact'))
                             ->relationship('contact', 'name')
                             ->searchable()
                             ->preload()
                             ->prefixIcon('heroicon-o-user'),
                         Forms\Components\TextInput::make('value')
+                            ->label(__('Value'))
                             ->numeric()
-                            ->prefix('$')
+                            ->prefix('€')
                             ->default(0)
                             ->placeholder('10000')
-                            ->helperText(__('Expected deal value in USD.')),
+                            ->helperText(__('Expected deal value in EUR.')),
                         Forms\Components\DatePicker::make('expected_close_date')
+                            ->label(__('Expected close date'))
                             ->prefixIcon('heroicon-o-calendar')
-                            ->displayFormat('M d, Y')
+                            ->displayFormat('d/m/Y')
                             ->placeholder('Select expected close date'),
                         Forms\Components\Textarea::make('notes')
+                            ->label(__('Notes'))
                             ->placeholder('Deal notes, next steps, etc.')
                             ->columnSpanFull(),
                     ])->columns(2),
@@ -99,11 +106,13 @@ class OpportunityResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold')
                     ->description(fn ($record) => $record->pipelineStage?->name),
                 Tables\Columns\TextColumn::make('pipelineStage.name')
+                    ->label(__('Stage'))
                     ->badge()
                     ->color(fn ($record) => match(true) {
                         $record->pipelineStage?->is_won => 'success',
@@ -112,26 +121,31 @@ class OpportunityResource extends Resource
                     })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('company.name')
+                    ->label(__('Company'))
                     ->sortable()
                     ->icon('heroicon-o-building-office'),
                 Tables\Columns\TextColumn::make('contact.name')
+                    ->label(__('Contact'))
                     ->sortable()
                     ->toggleable()
                     ->icon('heroicon-o-user'),
                 Tables\Columns\TextColumn::make('value')
-                    ->money('USD')
+                    ->label(__('Value'))
+                    ->money('EUR')
                     ->sortable()
                     ->weight('bold')
                     ->color('success')
                     ->alignEnd(),
                 Tables\Columns\TextColumn::make('expected_close_date')
-                    ->date()
+                    ->label(__('Expected close date'))
+                    ->date('d/m/Y')
                     ->sortable()
                     ->description(fn ($record) => $record->expected_close_date ? $record->expected_close_date->diffForHumans() : null)
                     ->color(fn ($record) => $record->expected_close_date && $record->expected_close_date->isPast() && !$record->pipelineStage?->is_won && !$record->pipelineStage?->is_lost ? 'danger' : null)
                     ->icon('heroicon-o-calendar'),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label(__('Created at'))
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

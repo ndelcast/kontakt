@@ -14,7 +14,7 @@ class ListOpportunities extends ListRecords
     {
         return [
             Actions\Action::make('kanban')
-                ->label('Kanban Board')
+                ->label(__('Kanban Board'))
                 ->icon('heroicon-o-view-columns')
                 ->url(fn () => route('filament.admin.pages.opportunities-kanban-board')),
             Actions\CreateAction::make(),

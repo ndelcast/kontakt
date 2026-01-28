@@ -17,17 +17,22 @@ class ContactsRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(__('Name'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
+                    ->label(__('Email'))
                     ->email()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
+                    ->label(__('Phone'))
                     ->tel()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('position')
+                    ->label(__('Position'))
                     ->maxLength(255),
                 Forms\Components\Textarea::make('notes')
+                    ->label(__('Notes'))
                     ->columnSpanFull(),
             ])->columns(2);
     }
@@ -37,12 +42,15 @@ class ContactsRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable()
                     ->weight('bold')
                     ->description(fn ($record) => $record->email),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label(__('Phone'))
                     ->icon('heroicon-o-phone'),
                 Tables\Columns\TextColumn::make('position')
+                    ->label(__('Position'))
                     ->badge()
                     ->color('gray'),
             ])

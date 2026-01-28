@@ -42,11 +42,13 @@ class PipelineStageResource extends Resource
                     ->icon('heroicon-o-view-columns')
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label(__('Name'))
                             ->required()
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-tag')
                             ->placeholder('Qualification'),
                         Forms\Components\TextInput::make('slug')
+                            ->label(__('Slug'))
                             ->required()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
@@ -54,8 +56,10 @@ class PipelineStageResource extends Resource
                             ->placeholder('qualification')
                             ->helperText(__('URL-friendly identifier for this stage.')),
                         Forms\Components\ColorPicker::make('color')
+                            ->label(__('Color'))
                             ->helperText(__('Color used on the Kanban board.')),
                         Forms\Components\TextInput::make('probability')
+                            ->label(__('Probability'))
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(100)
@@ -85,11 +89,14 @@ class PipelineStageResource extends Resource
                 Tables\Columns\ColorColumn::make('color')
                     ->label(''),
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->sortable()
                     ->weight('bold')
-                    ->description(fn ($record) => $record->probability . '% probability'),
-                Tables\Columns\TextColumn::make('slug'),
+                    ->description(fn ($record) => $record->probability . '% ' . __('probability')),
+                Tables\Columns\TextColumn::make('slug')
+                    ->label(__('Slug')),
                 Tables\Columns\TextColumn::make('probability')
+                    ->label(__('Probability'))
                     ->suffix('%')
                     ->sortable()
                     ->badge()
@@ -99,16 +106,18 @@ class PipelineStageResource extends Resource
                         default => 'gray',
                     }),
                 Tables\Columns\IconColumn::make('is_won')
+                    ->label(__('Is Won Stage'))
                     ->boolean()
                     ->trueColor('success')
                     ->falseColor('gray'),
                 Tables\Columns\IconColumn::make('is_lost')
+                    ->label(__('Is Lost Stage'))
                     ->boolean()
                     ->trueColor('danger')
                     ->falseColor('gray'),
                 Tables\Columns\TextColumn::make('opportunities_count')
                     ->counts('opportunities')
-                    ->label('Deals')
+                    ->label(__('Deals'))
                     ->badge()
                     ->color('info'),
             ])

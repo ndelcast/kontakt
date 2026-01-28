@@ -50,28 +50,34 @@ class CompanyResource extends Resource
                     ->icon('heroicon-o-building-office-2')
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label(__('Name'))
                             ->required()
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-building-office')
                             ->placeholder('Acme Corp'),
                         Forms\Components\TextInput::make('industry')
+                            ->label(__('Industry'))
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-briefcase')
                             ->placeholder('Technology'),
                         Forms\Components\TextInput::make('website')
+                            ->label(__('Website'))
                             ->url()
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-globe-alt')
                             ->placeholder('https://example.com'),
                         Forms\Components\TextInput::make('phone')
+                            ->label(__('Phone'))
                             ->tel()
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-phone')
-                            ->placeholder('+1 (555) 000-0000'),
+                            ->placeholder('+33 1 23 45 67 89'),
                         Forms\Components\Textarea::make('address')
+                            ->label(__('Address'))
                             ->placeholder('123 Main St, City, State')
                             ->columnSpanFull(),
                         Forms\Components\Textarea::make('notes')
+                            ->label(__('Notes'))
                             ->placeholder('Additional notes about this company...')
                             ->columnSpanFull(),
                     ])->columns(2),
@@ -83,34 +89,39 @@ class CompanyResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
                 Tables\Columns\TextColumn::make('industry')
+                    ->label(__('Industry'))
                     ->searchable()
                     ->sortable()
                     ->badge()
                     ->color('gray'),
                 Tables\Columns\TextColumn::make('website')
+                    ->label(__('Website'))
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->url(fn ($record) => $record->website, shouldOpenInNewTab: true)
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label(__('Phone'))
                     ->icon('heroicon-o-phone')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('contacts_count')
                     ->counts('contacts')
-                    ->label('Contacts')
+                    ->label(__('Contacts'))
                     ->sortable()
                     ->badge()
                     ->color('info'),
                 Tables\Columns\TextColumn::make('opportunities_count')
                     ->counts('opportunities')
-                    ->label('Opportunities')
+                    ->label(__('Opportunities'))
                     ->sortable()
                     ->badge()
                     ->color('success'),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

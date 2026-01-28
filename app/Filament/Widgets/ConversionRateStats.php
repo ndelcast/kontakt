@@ -75,7 +75,7 @@ class ConversionRateStats extends StatsOverviewWidget
                 ->descriptionIcon($winRateDiff >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($winRate >= 50 ? 'success' : 'warning')
                 ->chart($winRateSparkline),
-            Stat::make(__('Avg Deal Size'), '$' . number_format($avgDealSize, 2))
+            Stat::make(__('Avg Deal Size'), number_format($avgDealSize, 2, ',', ' ') . ' €')
                 ->description(__('Won opportunities'))
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('info')

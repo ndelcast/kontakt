@@ -60,18 +60,18 @@ class PipelineOverviewStats extends StatsOverviewWidget
             : 0;
 
         return [
-            Stat::make(__('Total Pipeline Value'), '$' . number_format($totalPipelineValue, 2))
+            Stat::make(__('Total Pipeline Value'), number_format($totalPipelineValue, 2, ',', ' ') . ' €')
                 ->description($pipelineTrend >= 0 ? $pipelineTrend . '% ' . __('increase') : abs($pipelineTrend) . '% ' . __('decrease'))
                 ->descriptionIcon($pipelineTrend >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($pipelineTrend >= 0 ? 'success' : 'danger')
                 ->chart($pipelineSparkline),
-            Stat::make(__('Weighted Value'), '$' . number_format($weightedValue, 2))
+            Stat::make(__('Weighted Value'), number_format($weightedValue, 2, ',', ' ') . ' €')
                 ->description(__('Probability-adjusted'))
                 ->descriptionIcon('heroicon-m-scale')
                 ->color('info')
                 ->chart($pipelineSparkline),
             Stat::make(__('Won This Month'), $wonThisMonthCount)
-                ->description($wonTrend >= 0 ? '$' . number_format($wonThisMonthValue, 2) . ' (+' . $wonTrend . '%)' : '$' . number_format($wonThisMonthValue, 2) . ' (' . $wonTrend . '%)')
+                ->description($wonTrend >= 0 ? number_format($wonThisMonthValue, 2, ',', ' ') . ' € (+' . $wonTrend . '%)' : number_format($wonThisMonthValue, 2, ',', ' ') . ' € (' . $wonTrend . '%)')
                 ->descriptionIcon($wonTrend >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($wonTrend >= 0 ? 'success' : 'warning')
                 ->chart($wonSparkline),

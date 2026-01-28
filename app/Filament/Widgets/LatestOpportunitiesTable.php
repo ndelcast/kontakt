@@ -28,10 +28,12 @@ class LatestOpportunitiesTable extends BaseWidget
             )
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable()
                     ->weight('bold')
                     ->description(fn ($record) => $record->company?->name),
                 Tables\Columns\TextColumn::make('pipelineStage.name')
+                    ->label(__('Stage'))
                     ->badge()
                     ->color(fn ($record) => match(true) {
                         $record->pipelineStage?->is_won => 'success',
@@ -39,11 +41,13 @@ class LatestOpportunitiesTable extends BaseWidget
                         default => 'primary',
                     }),
                 Tables\Columns\TextColumn::make('value')
-                    ->money('USD')
+                    ->label(__('Value'))
+                    ->money('EUR')
                     ->weight('bold')
                     ->color('success')
                     ->alignEnd(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->since()
                     ->sortable(),
             ])

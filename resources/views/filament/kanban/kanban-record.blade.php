@@ -19,7 +19,7 @@
         <div class="font-semibold text-sm truncate">{{ $record->name }}</div>
         @if($record->value > 0)
             <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
-                ${{ number_format($record->value, 2) }}
+                {{ number_format($record->value, 2, ',', ' ') }} €
             </div>
         @endif
     </div>
@@ -43,7 +43,7 @@
     @if($record->expected_close_date)
         <div class="flex items-center justify-end mt-1.5">
             <span class="text-xs {{ $record->expected_close_date->isPast() && !$record->pipelineStage?->is_won && !$record->pipelineStage?->is_lost ? 'text-rose-500 font-semibold' : 'text-gray-400 dark:text-gray-500' }}">
-                {{ $record->expected_close_date->format('M d, Y') }}
+                {{ $record->expected_close_date->format('d/m/Y') }}
             </span>
         </div>
     @endif

@@ -50,39 +50,47 @@ class ContactResource extends Resource
                     ->icon('heroicon-o-user')
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label(__('Name'))
                             ->required()
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-user')
                             ->placeholder('John Doe'),
                         Forms\Components\Select::make('company_id')
+                            ->label(__('Company'))
                             ->relationship('company', 'name')
                             ->searchable()
                             ->preload()
                             ->prefixIcon('heroicon-o-building-office')
                             ->createOptionForm([
                                 Forms\Components\TextInput::make('name')
+                                    ->label(__('Name'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('industry')
+                                    ->label(__('Industry'))
                                     ->maxLength(255),
                             ]),
                         Forms\Components\TextInput::make('email')
+                            ->label(__('Email'))
                             ->email()
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-envelope')
                             ->placeholder('john@example.com')
                             ->helperText(__('Primary email address for communication.')),
                         Forms\Components\TextInput::make('phone')
+                            ->label(__('Phone'))
                             ->tel()
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-phone')
-                            ->placeholder('+1 (555) 000-0000'),
+                            ->placeholder('+33 1 23 45 67 89'),
                         Forms\Components\TextInput::make('position')
+                            ->label(__('Position'))
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-briefcase')
                             ->placeholder('Sales Manager')
                             ->helperText(__('Job title or role at the company.')),
                         Forms\Components\Textarea::make('notes')
+                            ->label(__('Notes'))
                             ->placeholder('Additional notes about this contact...')
                             ->columnSpanFull(),
                     ])->columns(2),
@@ -94,21 +102,26 @@ class ContactResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold')
                     ->description(fn ($record) => $record->email),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label(__('Phone'))
                     ->searchable()
                     ->icon('heroicon-o-phone'),
                 Tables\Columns\TextColumn::make('company.name')
+                    ->label(__('Company'))
                     ->sortable()
                     ->icon('heroicon-o-building-office')
-                    ->placeholder('No company'),
+                    ->placeholder(__('No company')),
                 Tables\Columns\TextColumn::make('position')
+                    ->label(__('Position'))
                     ->badge()
                     ->color('gray'),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

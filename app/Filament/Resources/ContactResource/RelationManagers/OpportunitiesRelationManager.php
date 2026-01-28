@@ -17,21 +17,28 @@ class OpportunitiesRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(__('Name'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('pipeline_stage_id')
+                    ->label(__('Stage'))
                     ->relationship('pipelineStage', 'name')
                     ->required(),
                 Forms\Components\Select::make('company_id')
+                    ->label(__('Company'))
                     ->relationship('company', 'name')
                     ->searchable()
                     ->preload(),
                 Forms\Components\TextInput::make('value')
+                    ->label(__('Value'))
                     ->numeric()
-                    ->prefix('$')
+                    ->prefix('€')
                     ->default(0),
-                Forms\Components\DatePicker::make('expected_close_date'),
+                Forms\Components\DatePicker::make('expected_close_date')
+                    ->label(__('Expected close date'))
+                    ->displayFormat('d/m/Y'),
                 Forms\Components\Textarea::make('notes')
+                    ->label(__('Notes'))
                     ->columnSpanFull(),
             ])->columns(2);
     }
@@ -41,9 +48,11 @@ class OpportunitiesRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable()
                     ->weight('bold'),
                 Tables\Columns\TextColumn::make('pipelineStage.name')
+                    ->label(__('Stage'))
                     ->badge()
                     ->color(fn ($record) => match(true) {
                         $record->pipelineStage?->is_won => 'success',
@@ -51,13 +60,15 @@ class OpportunitiesRelationManager extends RelationManager
                         default => 'primary',
                     }),
                 Tables\Columns\TextColumn::make('value')
-                    ->money('USD')
+                    ->label(__('Value'))
+                    ->money('EUR')
                     ->sortable()
                     ->weight('bold')
                     ->color('success')
                     ->alignEnd(),
                 Tables\Columns\TextColumn::make('expected_close_date')
-                    ->date()
+                    ->label(__('Expected close date'))
+                    ->date('d/m/Y')
                     ->sortable()
                     ->icon('heroicon-o-calendar'),
             ])

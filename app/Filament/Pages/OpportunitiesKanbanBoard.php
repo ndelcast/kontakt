@@ -103,6 +103,7 @@ class OpportunitiesKanbanBoard extends KanbanBoard
     {
         return [
             TextInput::make('name')
+                ->label(__('Name'))
                 ->required(),
             Select::make('pipeline_stage_id')
                 ->label(__('Stage'))
@@ -119,10 +120,14 @@ class OpportunitiesKanbanBoard extends KanbanBoard
                 ->searchable()
                 ->preload(),
             TextInput::make('value')
+                ->label(__('Value'))
                 ->numeric()
-                ->prefix('$'),
-            DatePicker::make('expected_close_date'),
-            Textarea::make('notes'),
+                ->prefix('€'),
+            DatePicker::make('expected_close_date')
+                ->label(__('Expected close date'))
+                ->displayFormat('d/m/Y'),
+            Textarea::make('notes')
+                ->label(__('Notes')),
         ];
     }
 
