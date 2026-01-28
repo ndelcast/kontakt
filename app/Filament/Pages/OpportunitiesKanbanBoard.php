@@ -10,11 +10,17 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Filament\Support\Enums\MaxWidth;
 use Mokhosh\FilamentKanban\Pages\KanbanBoard;
 
 class OpportunitiesKanbanBoard extends KanbanBoard
 {
     protected static ?string $navigationIcon = 'heroicon-o-view-columns';
+
+    public function getMaxContentWidth(): MaxWidth
+    {
+        return MaxWidth::Full;
+    }
 
     protected static string $model = Opportunity::class;
 

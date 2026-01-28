@@ -8,6 +8,13 @@ use Filament\Pages\Auth\EditProfile as BaseEditProfile;
 
 class EditProfile extends BaseEditProfile
 {
+    protected static string $layout = 'filament-panels::components.layout.index';
+
+    public function hasTopbar(): bool
+    {
+        return true;
+    }
+
     public function form(Form $form): Form
     {
         return $form
