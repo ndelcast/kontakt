@@ -123,6 +123,9 @@ class OpportunitiesKanbanBoard extends KanbanBoard
                 ->label(__('Value'))
                 ->numeric()
                 ->prefix('€'),
+            DatePicker::make('started_at')
+                ->label(__('Start date'))
+                ->displayFormat('d/m/Y'),
             DatePicker::make('expected_close_date')
                 ->label(__('Expected close date'))
                 ->displayFormat('d/m/Y'),

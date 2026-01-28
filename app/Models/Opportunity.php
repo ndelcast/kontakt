@@ -22,6 +22,7 @@ class Opportunity extends Model implements Sortable
         'position',
         'won_at',
         'lost_at',
+        'started_at',
     ];
 
     protected $casts = [
@@ -29,6 +30,7 @@ class Opportunity extends Model implements Sortable
         'expected_close_date' => 'date',
         'won_at' => 'datetime',
         'lost_at' => 'datetime',
+        'started_at' => 'datetime',
         'position' => 'integer',
     ];
 

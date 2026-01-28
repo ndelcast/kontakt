@@ -21,7 +21,7 @@ class ConversionRateStats extends StatsOverviewWidget
         $avgDealSize = Opportunity::whereNotNull('won_at')->avg('value') ?? 0;
 
         $avgDaysToClose = Opportunity::whereNotNull('won_at')
-            ->selectRaw('AVG(DATEDIFF(won_at, created_at)) as avg_days')
+            ->selectRaw('AVG(DATEDIFF(won_at, started_at)) as avg_days')
             ->value('avg_days') ?? 0;
 
         // Monthly win rates for sparkline
@@ -50,7 +50,7 @@ class ConversionRateStats extends StatsOverviewWidget
             $mDays = Opportunity::whereNotNull('won_at')
                 ->whereMonth('won_at', $month->month)
                 ->whereYear('won_at', $month->year)
-                ->selectRaw('AVG(DATEDIFF(won_at, created_at)) as avg_days')
+                ->selectRaw('AVG(DATEDIFF(won_at, started_at)) as avg_days')
                 ->value('avg_days') ?? 0;
             $daysSparkline[] = (int) round($mDays);
         }

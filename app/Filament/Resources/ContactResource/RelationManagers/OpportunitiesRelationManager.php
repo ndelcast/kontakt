@@ -34,6 +34,10 @@ class OpportunitiesRelationManager extends RelationManager
                     ->numeric()
                     ->prefix('€')
                     ->default(0),
+                Forms\Components\DatePicker::make('started_at')
+                    ->label(__('Start date'))
+                    ->default(now())
+                    ->displayFormat('d/m/Y'),
                 Forms\Components\DatePicker::make('expected_close_date')
                     ->label(__('Expected close date'))
                     ->displayFormat('d/m/Y'),

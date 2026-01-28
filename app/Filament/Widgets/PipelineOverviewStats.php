@@ -17,7 +17,7 @@ class PipelineOverviewStats extends StatsOverviewWidget
             ->sum('value');
 
         $lastMonthPipelineValue = Opportunity::whereHas('pipelineStage', fn ($q) => $q->where('is_won', false)->where('is_lost', false))
-            ->where('created_at', '<', now()->startOfMonth())
+            ->where('started_at', '<', now()->startOfMonth())
             ->sum('value');
 
         $weightedValue = Opportunity::whereHas('pipelineStage', fn ($q) => $q->where('is_won', false)->where('is_lost', false))
@@ -42,7 +42,7 @@ class PipelineOverviewStats extends StatsOverviewWidget
         $wonSparkline = [];
         for ($i = 5; $i >= 0; $i--) {
             $month = now()->subMonths($i);
-            $pipelineSparkline[] = (int) Opportunity::where('created_at', '<=', $month->endOfMonth())
+            $pipelineSparkline[] = (int) Opportunity::where('started_at', '<=', $month->endOfMonth())
                 ->whereHas('pipelineStage', fn ($q) => $q->where('is_won', false)->where('is_lost', false))
                 ->sum('value');
             $wonSparkline[] = (int) Opportunity::whereNotNull('won_at')

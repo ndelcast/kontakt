@@ -88,6 +88,11 @@ class OpportunityResource extends Resource
                             ->default(0)
                             ->placeholder('10000')
                             ->helperText(__('Expected deal value in EUR.')),
+                        Forms\Components\DatePicker::make('started_at')
+                            ->label(__('Start date'))
+                            ->default(now())
+                            ->prefixIcon('heroicon-o-calendar')
+                            ->displayFormat('d/m/Y'),
                         Forms\Components\DatePicker::make('expected_close_date')
                             ->label(__('Expected close date'))
                             ->prefixIcon('heroicon-o-calendar')

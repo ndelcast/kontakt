@@ -23,7 +23,7 @@ class LatestOpportunitiesTable extends BaseWidget
         return $table
             ->query(
                 Opportunity::with(['pipelineStage', 'company'])
-                    ->latest()
+                    ->latest('started_at')
                     ->limit(5)
             )
             ->columns([
@@ -46,8 +46,8 @@ class LatestOpportunitiesTable extends BaseWidget
                     ->weight('bold')
                     ->color('success')
                     ->alignEnd(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('Created at'))
+                Tables\Columns\TextColumn::make('started_at')
+                    ->label(__('Start date'))
                     ->since()
                     ->sortable(),
             ])
