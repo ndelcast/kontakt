@@ -44,6 +44,8 @@ class AdminPanelProvider extends PanelProvider
                 'info' => Color::Sky,
             ])
             ->navigationGroups([
+                NavigationGroup::make(__('Activities'))
+                    ->icon('heroicon-o-clipboard-document-check'),
                 NavigationGroup::make(__('Pipeline'))
                     ->icon('heroicon-o-chart-bar'),
                 NavigationGroup::make(__('Contacts'))

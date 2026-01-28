@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OpportunityResource\Pages;
+use App\Filament\Resources\OpportunityResource\RelationManagers;
 use App\Models\Opportunity;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -230,6 +231,13 @@ class OpportunityResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\TasksRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
