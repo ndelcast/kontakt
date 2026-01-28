@@ -41,6 +41,9 @@ class OpportunitiesRelationManager extends RelationManager
                 Forms\Components\DatePicker::make('expected_close_date')
                     ->label(__('Expected close date'))
                     ->displayFormat('d/m/Y'),
+                Forms\Components\DatePicker::make('won_at')
+                    ->label(__('Won date'))
+                    ->displayFormat('d/m/Y'),
                 Forms\Components\Textarea::make('notes')
                     ->label(__('Notes'))
                     ->columnSpanFull(),

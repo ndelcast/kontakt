@@ -129,6 +129,9 @@ class OpportunitiesKanbanBoard extends KanbanBoard
             DatePicker::make('expected_close_date')
                 ->label(__('Expected close date'))
                 ->displayFormat('d/m/Y'),
+            DatePicker::make('won_at')
+                ->label(__('Won date'))
+                ->displayFormat('d/m/Y'),
             Textarea::make('notes')
                 ->label(__('Notes')),
         ];

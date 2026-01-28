@@ -98,6 +98,10 @@ class OpportunityResource extends Resource
                             ->prefixIcon('heroicon-o-calendar')
                             ->displayFormat('d/m/Y')
                             ->placeholder('Select expected close date'),
+                        Forms\Components\DatePicker::make('won_at')
+                            ->label(__('Won date'))
+                            ->prefixIcon('heroicon-o-trophy')
+                            ->displayFormat('d/m/Y'),
                         Forms\Components\Textarea::make('notes')
                             ->label(__('Notes'))
                             ->placeholder('Deal notes, next steps, etc.')
@@ -153,6 +157,12 @@ class OpportunityResource extends Resource
                     ->description(fn ($record) => $record->expected_close_date ? $record->expected_close_date->diffForHumans() : null)
                     ->color(fn ($record) => $record->expected_close_date && $record->expected_close_date->isPast() && !$record->pipelineStage?->is_won && !$record->pipelineStage?->is_lost ? 'danger' : null)
                     ->icon('heroicon-o-calendar'),
+                Tables\Columns\TextColumn::make('won_at')
+                    ->label(__('Won date'))
+                    ->date('d/m/Y')
+                    ->sortable()
+                    ->toggleable()
+                    ->icon('heroicon-o-trophy'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Created at'))
                     ->dateTime('d/m/Y H:i')
@@ -206,6 +216,9 @@ class OpportunityResource extends Resource
                             ->displayFormat('d/m/Y'),
                         Forms\Components\DatePicker::make('expected_close_date')
                             ->label(__('Expected close date'))
+                            ->displayFormat('d/m/Y'),
+                        Forms\Components\DatePicker::make('won_at')
+                            ->label(__('Won date'))
                             ->displayFormat('d/m/Y'),
                         Forms\Components\Textarea::make('notes')
                             ->label(__('Notes'))
