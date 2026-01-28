@@ -141,6 +141,11 @@ class OpportunityResource extends Resource
                     ->weight('bold')
                     ->color('success')
                     ->alignEnd(),
+                Tables\Columns\TextColumn::make('started_at')
+                    ->label(__('Start date'))
+                    ->date('d/m/Y')
+                    ->sortable()
+                    ->icon('heroicon-o-calendar'),
                 Tables\Columns\TextColumn::make('expected_close_date')
                     ->label(__('Expected close date'))
                     ->date('d/m/Y')
