@@ -176,7 +176,41 @@ class OpportunityResource extends Resource
                     ->preload(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->form([
+                        Forms\Components\TextInput::make('name')
+                            ->label(__('Name'))
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Select::make('pipeline_stage_id')
+                            ->label(__('Stage'))
+                            ->relationship('pipelineStage', 'name')
+                            ->required()
+                            ->preload(),
+                        Forms\Components\Select::make('company_id')
+                            ->label(__('Company'))
+                            ->relationship('company', 'name')
+                            ->searchable()
+                            ->preload(),
+                        Forms\Components\Select::make('contact_id')
+                            ->label(__('Contact'))
+                            ->relationship('contact', 'name')
+                            ->searchable()
+                            ->preload(),
+                        Forms\Components\TextInput::make('value')
+                            ->label(__('Value'))
+                            ->numeric()
+                            ->prefix('€'),
+                        Forms\Components\DatePicker::make('started_at')
+                            ->label(__('Start date'))
+                            ->displayFormat('d/m/Y'),
+                        Forms\Components\DatePicker::make('expected_close_date')
+                            ->label(__('Expected close date'))
+                            ->displayFormat('d/m/Y'),
+                        Forms\Components\Textarea::make('notes')
+                            ->label(__('Notes'))
+                            ->columnSpanFull(),
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
