@@ -163,8 +163,13 @@ class TeamMembers extends Page implements HasTable
                         return;
                     }
 
-                    // Create invitation
-                    $invitation = TeamInvitation::createForTeam($team, $data['email'], $data['role']);
+                    // Create invitation with current user's locale
+                    $invitation = TeamInvitation::createForTeam(
+                        $team,
+                        $data['email'],
+                        $data['role'],
+                        app()->getLocale()
+                    );
 
                     // Send email notification
                     NotificationFacade::route('mail', $data['email'])
