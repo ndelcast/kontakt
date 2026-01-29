@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,9 +11,10 @@ use Spatie\EloquentSortable\SortableTrait;
 
 class Opportunity extends Model implements Sortable
 {
-    use SortableTrait;
+    use BelongsToTenant, SortableTrait;
 
     protected $fillable = [
+        'team_id',
         'pipeline_stage_id',
         'company_id',
         'contact_id',

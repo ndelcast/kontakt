@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Opportunity;
+use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
@@ -22,8 +23,11 @@ class WonLostOverTimeChart extends ChartWidget
 
     protected function getData(): array
     {
+        $team = Filament::getTenant();
+
         $won = Trend::query(
             Opportunity::whereNotNull('won_at')
+                ->when($team, fn ($q) => $q->where('team_id', $team->id))
         )
             ->dateColumn('won_at')
             ->between(
@@ -35,6 +39,7 @@ class WonLostOverTimeChart extends ChartWidget
 
         $lost = Trend::query(
             Opportunity::whereNotNull('lost_at')
+                ->when($team, fn ($q) => $q->where('team_id', $team->id))
         )
             ->dateColumn('lost_at')
             ->between(

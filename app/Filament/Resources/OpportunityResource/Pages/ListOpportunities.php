@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\OpportunityResource\Pages;
 
+use App\Filament\Pages\OpportunitiesKanbanBoard;
 use App\Filament\Resources\OpportunityResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
@@ -16,7 +17,7 @@ class ListOpportunities extends ListRecords
             Actions\Action::make('kanban')
                 ->label(__('Kanban Board'))
                 ->icon('heroicon-o-view-columns')
-                ->url(fn () => route('filament.admin.pages.opportunities-kanban-board')),
+                ->url(fn () => OpportunitiesKanbanBoard::getUrl()),
             Actions\CreateAction::make(),
         ];
     }

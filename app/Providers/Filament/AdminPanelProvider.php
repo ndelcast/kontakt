@@ -3,7 +3,13 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\EditProfile;
+use App\Filament\Pages\Auth\PendingApproval;
+use App\Filament\Pages\Auth\Registration;
+use App\Filament\Pages\Tenancy\CreateTeam;
+use App\Filament\Pages\Tenancy\EditTeamProfile;
+use App\Http\Middleware\EnsureUserIsApproved;
 use App\Http\Middleware\SetLocale;
+use App\Models\Team;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -14,6 +20,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\HtmlString;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -31,7 +38,11 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->registration(Registration::class)
             ->profile(EditProfile::class)
+            ->tenant(Team::class, slugAttribute: 'slug')
+            ->tenantRegistration(CreateTeam::class)
+            ->tenantProfile(EditTeamProfile::class)
             ->brandName('Kontak')
             ->font('Inter')
             ->favicon(asset('favicon.ico'))
@@ -50,6 +61,12 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-chart-bar'),
                 NavigationGroup::make(__('Contacts'))
                     ->icon('heroicon-o-user-group'),
+                NavigationGroup::make(__('Team'))
+                    ->icon('heroicon-o-users')
+                    ->collapsed(),
+                NavigationGroup::make(__('Administration'))
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->collapsed(),
             ])
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
@@ -128,6 +145,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+                EnsureUserIsApproved::class,
+            ])
+            ->routes(function () {
+                Route::get('/auth/pending-approval', PendingApproval::class)
+                    ->middleware(['auth'])
+                    ->name('auth.pending-approval');
+            });
     }
 }
