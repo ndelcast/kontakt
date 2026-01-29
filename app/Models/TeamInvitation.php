@@ -15,6 +15,7 @@ class TeamInvitation extends Model
         'team_id',
         'email',
         'role',
+        'locale',
         'token',
         'expires_at',
     ];
@@ -46,12 +47,13 @@ class TeamInvitation extends Model
         return Str::random(64);
     }
 
-    public static function createForTeam(Team $team, string $email, string $role = 'member', int $expiresInDays = 7): static
+    public static function createForTeam(Team $team, string $email, string $role = 'member', ?string $locale = null, int $expiresInDays = 7): static
     {
         return static::create([
             'team_id' => $team->id,
             'email' => $email,
             'role' => $role,
+            'locale' => $locale ?? app()->getLocale(),
             'token' => static::generateToken(),
             'expires_at' => now()->addDays($expiresInDays),
         ]);
