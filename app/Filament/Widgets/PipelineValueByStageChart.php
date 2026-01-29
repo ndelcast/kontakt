@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\PipelineStage;
+use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
 
 class PipelineValueByStageChart extends ChartWidget
@@ -20,7 +21,11 @@ class PipelineValueByStageChart extends ChartWidget
 
     protected function getData(): array
     {
-        $stages = PipelineStage::withSum('opportunities', 'value')
+        $team = Filament::getTenant();
+
+        $stages = PipelineStage::query()
+            ->when($team, fn ($q) => $q->where('team_id', $team->id))
+            ->withSum(['opportunities' => fn ($q) => $q->when($team, fn ($oq) => $oq->where('team_id', $team->id))], 'value')
             ->orderBy('position')
             ->where('is_won', false)
             ->where('is_lost', false)

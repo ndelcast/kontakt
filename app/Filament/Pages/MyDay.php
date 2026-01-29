@@ -3,9 +3,11 @@
 namespace App\Filament\Pages;
 
 use App\Enums\TaskType;
+use App\Filament\Resources\TaskResource;
 use App\Models\Task;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -37,23 +39,41 @@ class MyDay extends Page
 
     public static function getNavigationBadge(): ?string
     {
-        $count = Task::forUser(Auth::id())->pending()->where(function ($q) {
-            $q->whereNull('due_date')
-                ->orWhere('due_date', '<=', now()->toDateString());
-        })->count();
+        $team = Filament::getTenant();
+
+        $count = Task::query()
+            ->when($team, fn ($q) => $q->where('team_id', $team->id))
+            ->forUser(Auth::id())
+            ->pending()
+            ->where(function ($q) {
+                $q->whereNull('due_date')
+                    ->orWhere('due_date', '<=', now()->toDateString());
+            })
+            ->count();
 
         return $count > 0 ? (string) $count : null;
     }
 
     public static function getNavigationBadgeColor(): string|array|null
     {
-        $overdueCount = Task::forUser(Auth::id())->overdue()->count();
+        $team = Filament::getTenant();
+
+        $overdueCount = Task::query()
+            ->when($team, fn ($q) => $q->where('team_id', $team->id))
+            ->forUser(Auth::id())
+            ->overdue()
+            ->count();
+
         return $overdueCount > 0 ? 'danger' : 'primary';
     }
 
     public function getOverdueTasks(): Collection
     {
-        return Task::forUser(Auth::id())
+        $team = Filament::getTenant();
+
+        return Task::query()
+            ->when($team, fn ($q) => $q->where('team_id', $team->id))
+            ->forUser(Auth::id())
             ->overdue()
             ->with(['opportunity', 'contact', 'company'])
             ->orderBy('due_date')
@@ -64,7 +84,11 @@ class MyDay extends Page
 
     public function getTodayTasks(): Collection
     {
-        return Task::forUser(Auth::id())
+        $team = Filament::getTenant();
+
+        return Task::query()
+            ->when($team, fn ($q) => $q->where('team_id', $team->id))
+            ->forUser(Auth::id())
             ->today()
             ->with(['opportunity', 'contact', 'company'])
             ->orderBy('due_time')
@@ -74,7 +98,11 @@ class MyDay extends Page
 
     public function getUpcomingTasks(): Collection
     {
-        return Task::forUser(Auth::id())
+        $team = Filament::getTenant();
+
+        return Task::query()
+            ->when($team, fn ($q) => $q->where('team_id', $team->id))
+            ->forUser(Auth::id())
             ->upcoming()
             ->with(['opportunity', 'contact', 'company'])
             ->orderBy('due_date')
@@ -86,7 +114,13 @@ class MyDay extends Page
 
     public function completeTask(int $taskId, ?string $outcome = null): void
     {
-        $task = Task::where('user_id', Auth::id())->findOrFail($taskId);
+        $team = Filament::getTenant();
+
+        $task = Task::query()
+            ->when($team, fn ($q) => $q->where('team_id', $team->id))
+            ->where('user_id', Auth::id())
+            ->findOrFail($taskId);
+
         $task->update([
             'completed_at' => now(),
             'outcome' => $outcome,
@@ -100,11 +134,13 @@ class MyDay extends Page
 
     protected function getHeaderActions(): array
     {
+        $team = Filament::getTenant();
+
         return [
             Action::make('all-tasks')
                 ->label(__('All Tasks'))
                 ->icon('heroicon-o-list-bullet')
-                ->url(fn () => route('filament.admin.resources.tasks.index'))
+                ->url(fn () => TaskResource::getUrl())
                 ->color('gray'),
             CreateAction::make('create-task')
                 ->label(__('New Task'))
@@ -138,17 +174,17 @@ class MyDay extends Page
                         ->default(0),
                     Select::make('opportunity_id')
                         ->label(__('Opportunity'))
-                        ->relationship('opportunity', 'name')
+                        ->relationship('opportunity', 'name', fn ($query) => $query->when($team, fn ($q) => $q->where('team_id', $team->id)))
                         ->searchable()
                         ->preload(),
                     Select::make('contact_id')
                         ->label(__('Contact'))
-                        ->relationship('contact', 'name')
+                        ->relationship('contact', 'name', fn ($query) => $query->when($team, fn ($q) => $q->where('team_id', $team->id)))
                         ->searchable()
                         ->preload(),
                     Select::make('company_id')
                         ->label(__('Company'))
-                        ->relationship('company', 'name')
+                        ->relationship('company', 'name', fn ($query) => $query->when($team, fn ($q) => $q->where('team_id', $team->id)))
                         ->searchable()
                         ->preload(),
                     Hidden::make('user_id')

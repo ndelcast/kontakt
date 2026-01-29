@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\Opportunity;
 use App\Models\PipelineStage;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -49,9 +50,13 @@ class OpportunitiesKanbanBoard extends KanbanBoard
 
     protected function statuses(): Collection
     {
-        return PipelineStage::orderBy('position')
-            ->withCount('opportunities')
-            ->withSum('opportunities', 'value')
+        $team = Filament::getTenant();
+
+        return PipelineStage::query()
+            ->when($team, fn ($q) => $q->where('team_id', $team->id))
+            ->orderBy('position')
+            ->withCount(['opportunities' => fn ($q) => $q->when($team, fn ($oq) => $oq->where('team_id', $team->id))])
+            ->withSum(['opportunities' => fn ($q) => $q->when($team, fn ($oq) => $oq->where('team_id', $team->id))], 'value')
             ->get()
             ->map(function (PipelineStage $stage) {
                 return [
@@ -64,7 +69,10 @@ class OpportunitiesKanbanBoard extends KanbanBoard
 
     protected function records(): Collection
     {
+        $team = Filament::getTenant();
+
         return Opportunity::with(['company', 'contact', 'pipelineStage'])
+            ->when($team, fn ($q) => $q->where('team_id', $team->id))
             ->ordered()
             ->get();
     }
@@ -101,22 +109,28 @@ class OpportunitiesKanbanBoard extends KanbanBoard
 
     protected function getEditModalFormSchema(null|int|string $recordId): array
     {
+        $team = Filament::getTenant();
+
         return [
             TextInput::make('name')
                 ->label(__('Name'))
                 ->required(),
             Select::make('pipeline_stage_id')
                 ->label(__('Stage'))
-                ->options(PipelineStage::pluck('name', 'id'))
+                ->options(
+                    PipelineStage::query()
+                        ->when($team, fn ($q) => $q->where('team_id', $team->id))
+                        ->pluck('name', 'id')
+                )
                 ->required(),
             Select::make('company_id')
                 ->label(__('Company'))
-                ->relationship('company', 'name')
+                ->relationship('company', 'name', fn ($query) => $query->when($team, fn ($q) => $q->where('team_id', $team->id)))
                 ->searchable()
                 ->preload(),
             Select::make('contact_id')
                 ->label(__('Contact'))
-                ->relationship('contact', 'name')
+                ->relationship('contact', 'name', fn ($query) => $query->when($team, fn ($q) => $q->where('team_id', $team->id)))
                 ->searchable()
                 ->preload(),
             TextInput::make('value')
@@ -157,6 +171,9 @@ class OpportunitiesKanbanBoard extends KanbanBoard
 
     protected function getEloquentQuery(): Builder
     {
-        return Opportunity::query();
+        $team = Filament::getTenant();
+
+        return Opportunity::query()
+            ->when($team, fn ($q) => $q->where('team_id', $team->id));
     }
 }

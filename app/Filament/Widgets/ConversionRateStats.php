@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Opportunity;
+use Filament\Facades\Filament;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -12,15 +13,20 @@ class ConversionRateStats extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-        $wonCount = Opportunity::whereNotNull('won_at')->count();
-        $lostCount = Opportunity::whereNotNull('lost_at')->count();
+        $team = Filament::getTenant();
+        $teamId = $team?->id;
+
+        $baseQuery = fn () => Opportunity::when($teamId, fn ($q) => $q->where('team_id', $teamId));
+
+        $wonCount = $baseQuery()->whereNotNull('won_at')->count();
+        $lostCount = $baseQuery()->whereNotNull('lost_at')->count();
         $closedCount = $wonCount + $lostCount;
 
         $winRate = $closedCount > 0 ? round(($wonCount / $closedCount) * 100, 1) : 0;
 
-        $avgDealSize = Opportunity::whereNotNull('won_at')->avg('value') ?? 0;
+        $avgDealSize = $baseQuery()->whereNotNull('won_at')->avg('value') ?? 0;
 
-        $avgDaysToClose = Opportunity::whereNotNull('won_at')
+        $avgDaysToClose = $baseQuery()->whereNotNull('won_at')
             ->selectRaw('AVG(DATEDIFF(won_at, started_at)) as avg_days')
             ->value('avg_days') ?? 0;
 
@@ -30,24 +36,24 @@ class ConversionRateStats extends StatsOverviewWidget
         $daysSparkline = [];
         for ($i = 5; $i >= 0; $i--) {
             $month = now()->subMonths($i);
-            $mWon = Opportunity::whereNotNull('won_at')
+            $mWon = $baseQuery()->whereNotNull('won_at')
                 ->whereMonth('won_at', $month->month)
                 ->whereYear('won_at', $month->year)
                 ->count();
-            $mLost = Opportunity::whereNotNull('lost_at')
+            $mLost = $baseQuery()->whereNotNull('lost_at')
                 ->whereMonth('lost_at', $month->month)
                 ->whereYear('lost_at', $month->year)
                 ->count();
             $mClosed = $mWon + $mLost;
             $winRateSparkline[] = $mClosed > 0 ? round(($mWon / $mClosed) * 100) : 0;
 
-            $mAvg = Opportunity::whereNotNull('won_at')
+            $mAvg = $baseQuery()->whereNotNull('won_at')
                 ->whereMonth('won_at', $month->month)
                 ->whereYear('won_at', $month->year)
                 ->avg('value') ?? 0;
             $dealSizeSparkline[] = (int) $mAvg;
 
-            $mDays = Opportunity::whereNotNull('won_at')
+            $mDays = $baseQuery()->whereNotNull('won_at')
                 ->whereMonth('won_at', $month->month)
                 ->whereYear('won_at', $month->year)
                 ->selectRaw('AVG(DATEDIFF(won_at, started_at)) as avg_days')
@@ -57,11 +63,11 @@ class ConversionRateStats extends StatsOverviewWidget
 
         // Previous month comparison
         $prevMonth = now()->subMonth();
-        $prevWon = Opportunity::whereNotNull('won_at')
+        $prevWon = $baseQuery()->whereNotNull('won_at')
             ->whereMonth('won_at', $prevMonth->month)
             ->whereYear('won_at', $prevMonth->year)
             ->count();
-        $prevLost = Opportunity::whereNotNull('lost_at')
+        $prevLost = $baseQuery()->whereNotNull('lost_at')
             ->whereMonth('lost_at', $prevMonth->month)
             ->whereYear('lost_at', $prevMonth->year)
             ->count();

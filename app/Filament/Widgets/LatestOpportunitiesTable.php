@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Opportunity;
+use Filament\Facades\Filament;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -20,9 +21,12 @@ class LatestOpportunitiesTable extends BaseWidget
 
     public function table(Table $table): Table
     {
+        $team = Filament::getTenant();
+
         return $table
             ->query(
                 Opportunity::with(['pipelineStage', 'company'])
+                    ->when($team, fn ($q) => $q->where('team_id', $team->id))
                     ->latest('started_at')
                     ->limit(5)
             )

@@ -2,7 +2,9 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Pages\MyDay;
 use App\Models\Task;
+use Filament\Facades\Filament;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -22,9 +24,12 @@ class TodayTasksWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
+        $team = Filament::getTenant();
+
         return $table
             ->query(
                 Task::query()
+                    ->when($team, fn ($q) => $q->where('team_id', $team->id))
                     ->forUser(Auth::id())
                     ->where(function (Builder $query) {
                         $query->overdue()
@@ -75,7 +80,7 @@ class TodayTasksWidget extends BaseWidget
                 Tables\Actions\Action::make('my-day')
                     ->label(__('My Day'))
                     ->icon('heroicon-o-sun')
-                    ->url(fn () => route('filament.admin.pages.my-day'))
+                    ->url(fn () => MyDay::getUrl())
                     ->color('primary'),
             ]);
     }

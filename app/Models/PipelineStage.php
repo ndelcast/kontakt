@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\EloquentSortable\Sortable;
@@ -9,9 +10,10 @@ use Spatie\EloquentSortable\SortableTrait;
 
 class PipelineStage extends Model implements Sortable
 {
-    use SortableTrait;
+    use BelongsToTenant, SortableTrait;
 
     protected $fillable = [
+        'team_id',
         'name',
         'slug',
         'color',
