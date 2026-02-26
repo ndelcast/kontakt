@@ -52,6 +52,9 @@
     "Is Lost Stage": "Is Lost Stage",
     "Mark this as the lost/closed-lost stage.": "Mark this as the lost/closed-lost stage.",
 
+    "Active Leads & Opportunities": "Active Leads & Opportunities",
+    "leads": "leads",
+    "opportunities": "opportunities",
     "Total Pipeline Value": "Total Pipeline Value",
     "Weighted Value": "Weighted Value",
     "Probability-adjusted": "Probability-adjusted",
@@ -62,6 +65,8 @@
     "Avg Days to Close": "Avg Days to Close",
     "From creation to won": "From creation to won",
 
+    "Incoming Leads (Last 12 Months)": "Incoming Leads (Last 12 Months)",
+    "Leads": "Leads",
     "Won Revenue (Last 12 Months)": "Won Revenue (Last 12 Months)",
     "Revenue": "Revenue",
     "Pipeline Value by Stage": "Pipeline Value by Stage",

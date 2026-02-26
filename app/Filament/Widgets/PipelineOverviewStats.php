@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Contact;
 use App\Models\Opportunity;
 use Filament\Facades\Filament;
 use Filament\Widgets\StatsOverviewWidget;
@@ -63,6 +64,39 @@ class PipelineOverviewStats extends StatsOverviewWidget
                 ->count();
         }
 
+        // Active leads (contacts) + open opportunities
+        $activeLeads = Contact::when($teamId, fn ($q) => $q->where('team_id', $teamId))->count();
+        $activeOpportunities = $baseQuery()
+            ->whereHas('pipelineStage', fn ($q) => $q->where('is_won', false)->where('is_lost', false))
+            ->count();
+        $totalActive = $activeLeads + $activeOpportunities;
+
+        $lastMonthLeads = Contact::when($teamId, fn ($q) => $q->where('team_id', $teamId))
+            ->where('created_at', '<', now()->startOfMonth())
+            ->count();
+        $lastMonthActiveOpps = $baseQuery()
+            ->whereHas('pipelineStage', fn ($q) => $q->where('is_won', false)->where('is_lost', false))
+            ->where('started_at', '<', now()->startOfMonth())
+            ->count();
+        $lastMonthTotalActive = $lastMonthLeads + $lastMonthActiveOpps;
+
+        $activeSparkline = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $mLeads = Contact::when($teamId, fn ($q) => $q->where('team_id', $teamId))
+                ->where('created_at', '<=', $month->endOfMonth())
+                ->count();
+            $mOpps = $baseQuery()
+                ->where('started_at', '<=', $month->endOfMonth())
+                ->whereHas('pipelineStage', fn ($q) => $q->where('is_won', false)->where('is_lost', false))
+                ->count();
+            $activeSparkline[] = $mLeads + $mOpps;
+        }
+
+        $activeTrend = $lastMonthTotalActive > 0
+            ? round((($totalActive - $lastMonthTotalActive) / $lastMonthTotalActive) * 100, 1)
+            : 0;
+
         $pipelineTrend = $lastMonthPipelineValue > 0
             ? round((($totalPipelineValue - $lastMonthPipelineValue) / $lastMonthPipelineValue) * 100, 1)
             : 0;
@@ -72,6 +106,11 @@ class PipelineOverviewStats extends StatsOverviewWidget
             : 0;
 
         return [
+            Stat::make(__('Active Leads & Opportunities'), $totalActive)
+                ->description($activeLeads . ' ' . __('leads') . ' + ' . $activeOpportunities . ' ' . __('opportunities'))
+                ->descriptionIcon('heroicon-m-user-group')
+                ->color('primary')
+                ->chart($activeSparkline),
             Stat::make(__('Total Pipeline Value'), number_format($totalPipelineValue, 2, ',', ' ') . ' €')
                 ->description($pipelineTrend >= 0 ? $pipelineTrend . '% ' . __('increase') : abs($pipelineTrend) . '% ' . __('decrease'))
                 ->descriptionIcon($pipelineTrend >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')

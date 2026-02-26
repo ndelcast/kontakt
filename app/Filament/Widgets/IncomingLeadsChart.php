@@ -2,20 +2,20 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Opportunity;
+use App\Models\Contact;
 use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
-class RevenueOverTimeChart extends ChartWidget
+class IncomingLeadsChart extends ChartWidget
 {
     public function getHeading(): string
     {
-        return __('Won Revenue (Last 12 Months)');
+        return __('Incoming Leads (Last 12 Months)');
     }
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 3;
 
     protected int | string | array $columnSpan = 2;
 
@@ -26,27 +26,25 @@ class RevenueOverTimeChart extends ChartWidget
         $team = Filament::getTenant();
 
         $data = Trend::query(
-            Opportunity::whereNotNull('won_at')
-                ->when($team, fn ($q) => $q->where('team_id', $team->id))
+            Contact::when($team, fn ($q) => $q->where('team_id', $team->id))
         )
-            ->dateColumn('won_at')
             ->between(
                 start: now()->subMonths(11)->startOfMonth(),
                 end: now()->endOfMonth(),
             )
             ->perMonth()
-            ->sum('value');
+            ->count();
 
         return [
             'datasets' => [
                 [
-                    'label' => __('Revenue'),
+                    'label' => __('Leads'),
                     'data' => $data->map(fn (TrendValue $value) => $value->aggregate)->toArray(),
-                    'borderColor' => '#22c55e',
-                    'backgroundColor' => 'rgba(34, 197, 94, 0.1)',
+                    'borderColor' => '#6366f1',
+                    'backgroundColor' => 'rgba(99, 102, 241, 0.1)',
                     'fill' => true,
                     'tension' => 0.3,
-                    'pointBackgroundColor' => '#22c55e',
+                    'pointBackgroundColor' => '#6366f1',
                     'pointBorderColor' => '#ffffff',
                     'pointBorderWidth' => 2,
                     'pointRadius' => 4,
