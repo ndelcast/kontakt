@@ -27,7 +27,7 @@
     @php
         $opportunityDate = $record->started_at ?? $record->created_at;
     @endphp
-    @if($opportunityDate)
+    @if($opportunityDate && !$record->pipelineStage?->is_won && !$record->pipelineStage?->is_lost)
         @php
             $days = (int) $opportunityDate->diffInDays(now());
             if ($days > 90) {
