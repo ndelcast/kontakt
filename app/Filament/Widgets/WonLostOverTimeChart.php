@@ -15,7 +15,7 @@ class WonLostOverTimeChart extends ChartWidget
         return __('Won vs Lost (Last 12 Months)');
     }
 
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 6;
 
     protected int | string | array $columnSpan = 'full';
 

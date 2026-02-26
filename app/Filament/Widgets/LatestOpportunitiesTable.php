@@ -15,7 +15,7 @@ class LatestOpportunitiesTable extends BaseWidget
         return __('Latest Opportunities');
     }
 
-    protected static ?int $sort = 6;
+    protected static ?int $sort = 7;
 
     protected int | string | array $columnSpan = 'full';
 
