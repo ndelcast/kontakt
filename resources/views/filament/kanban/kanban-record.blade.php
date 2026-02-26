@@ -24,6 +24,28 @@
         @endif
     </div>
 
+    @php
+        $opportunityDate = $record->started_at ?? $record->created_at;
+    @endphp
+    @if($opportunityDate)
+        @php
+            $days = (int) $opportunityDate->diffInDays(now());
+            if ($days > 90) {
+                $badgeBg = '#fee2e2'; $badgeColor = '#b91c1c';
+            } elseif ($days > 30) {
+                $badgeBg = '#fef3c7'; $badgeColor = '#a16207';
+            } else {
+                $badgeBg = '#e0f2fe'; $badgeColor = '#0369a1';
+            }
+        @endphp
+        <div class="flex items-center mt-2">
+            <div class="inline-flex items-center gap-1 rounded-full" style="padding: 2px 8px; background: {{ $badgeBg }}; color: {{ $badgeColor }}; font-size: 13px; font-weight: 700;">
+                <x-heroicon-m-clock class="w-3.5 h-3.5" />
+                {{ $days }} {{ trans_choice('day|days', $days) }}
+            </div>
+        </div>
+    @endif
+
     @if($record->company)
         <div class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mt-1.5">
             <x-heroicon-m-building-office class="w-3 h-3 shrink-0" />
