@@ -18,7 +18,7 @@ class DashboardController extends Controller
     {
         $teamId = Auth::user()->current_team_id;
 
-        $pipelineStats = $this->gePipelineStats($teamId);
+        $pipelineStats = $this->getPipelineStats($teamId);
         $conversionStats = $this->getConversionStats($teamId);
         $incomingLeads = $this->getIncomingLeads($teamId);
         $revenueOverTime = $this->getRevenueOverTime($teamId);
