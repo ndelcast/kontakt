@@ -23,7 +23,7 @@ createInertiaApp({
                     preset: Aura,
                     options: {
                         prefix: 'p',
-                        darkModeSelector: '.dark',
+                        darkModeSelector: '.force-dark-never',
                     },
                 },
             })
@@ -33,6 +33,6 @@ createInertiaApp({
             .mount(el);
     },
     progress: {
-        color: '#6366f1',
+        color: '#4A6CF7',
     },
 });

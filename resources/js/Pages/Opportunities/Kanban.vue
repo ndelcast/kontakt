@@ -59,13 +59,15 @@ const columnTotal = (items) => {
 <template>
     <div>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0">Kanban Pipeline</h1>
+            <div>
+                <h1 class="text-xl font-bold text-gray-900 dark:text-white">Kanban Pipeline</h1>
+            </div>
             <div class="flex gap-2">
                 <Link href="/app/opportunities">
-                    <Button label="Liste" icon="pi pi-list" severity="secondary" outlined />
+                    <Button label="Liste" icon="pi pi-list" severity="secondary" outlined size="small" />
                 </Link>
                 <Link href="/app/opportunities/create">
-                    <Button label="Nouvelle opportunité" icon="pi pi-plus" />
+                    <Button label="Nouvelle opportunite" icon="pi pi-plus" size="small" />
                 </Link>
             </div>
         </div>
@@ -74,17 +76,25 @@ const columnTotal = (items) => {
             <div
                 v-for="column in columns"
                 :key="column.id"
-                class="flex-shrink-0 w-72 bg-surface-100 dark:bg-surface-800 rounded-xl flex flex-col"
+                class="kanban-col flex-shrink-0 w-72 rounded-2xl flex flex-col bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800"
             >
                 <!-- Column header -->
-                <div class="p-3 border-b border-surface-200 dark:border-surface-700">
+                <div class="p-4">
                     <div class="flex items-center justify-between mb-1">
-                        <h3 class="font-semibold text-sm text-surface-900 dark:text-surface-0">
-                            {{ column.name }}
-                        </h3>
-                        <Tag :value="String(column.items.length)" severity="secondary" rounded />
+                        <div class="flex items-center gap-2.5">
+                            <div
+                                class="w-3 h-3 rounded-md shrink-0"
+                                :style="{ backgroundColor: column.color || '#4f46e5' }"
+                            ></div>
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">
+                                {{ column.name }}
+                            </h3>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400 bg-white dark:bg-gray-800 px-2 py-0.5 rounded-md">
+                            {{ column.items.length }}
+                        </span>
                     </div>
-                    <p class="text-xs text-surface-500">{{ formatCurrency(columnTotal(column.items)) }}</p>
+                    <p class="text-xs font-semibold text-gray-400 ml-[22px]">{{ formatCurrency(columnTotal(column.items)) }}</p>
                 </div>
 
                 <!-- Cards -->
@@ -92,14 +102,14 @@ const columnTotal = (items) => {
                     v-model="column.items"
                     group="opportunities"
                     item-key="id"
-                    class="flex-1 p-2 space-y-2 overflow-y-auto"
+                    class="flex-1 px-2 pb-2 space-y-2 overflow-y-auto"
                     ghost-class="opacity-30"
                     @end="onDragEnd(column.id)"
                 >
                     <template #item="{ element }">
-                        <div class="bg-surface-0 dark:bg-surface-900 rounded-lg p-3 shadow-sm border border-surface-200 dark:border-surface-700 cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow">
+                        <div class="kanban-card bg-white dark:bg-gray-800 rounded-xl p-3.5 border border-gray-100 dark:border-gray-700 cursor-grab active:cursor-grabbing">
                             <div class="flex items-start justify-between mb-2">
-                                <Link :href="`/app/opportunities/${element.id}/edit`" class="font-medium text-sm text-surface-900 dark:text-surface-0 hover:text-primary">
+                                <Link :href="`/app/opportunities/${element.id}/edit`" class="font-semibold text-sm text-gray-900 dark:text-white hover:text-[#4A6CF7] transition-colors leading-snug">
                                     {{ element.name }}
                                 </Link>
                                 <Tag
@@ -109,19 +119,19 @@ const columnTotal = (items) => {
                                     rounded
                                 />
                             </div>
-                            <p class="text-sm font-bold text-green-600 mb-2">{{ formatCurrency(element.value) }}</p>
-                            <div class="space-y-1 text-xs text-surface-500">
-                                <div v-if="element.company" class="flex items-center gap-1">
-                                    <i class="pi pi-building"></i>
+                            <p class="text-sm font-bold text-teal-600 dark:text-teal-400 mb-3">{{ formatCurrency(element.value) }}</p>
+                            <div class="space-y-1.5 text-xs text-gray-400">
+                                <div v-if="element.company" class="flex items-center gap-1.5">
+                                    <i class="pi pi-building text-[0.6rem]"></i>
                                     <span>{{ element.company.name }}</span>
                                 </div>
-                                <div v-if="element.contact" class="flex items-center gap-1">
-                                    <i class="pi pi-user"></i>
+                                <div v-if="element.contact" class="flex items-center gap-1.5">
+                                    <i class="pi pi-user text-[0.6rem]"></i>
                                     <span>{{ element.contact.name }}</span>
                                 </div>
-                                <div v-if="element.expected_close_date" class="flex items-center gap-1">
-                                    <i class="pi pi-calendar"></i>
-                                    <span :class="{ 'text-red-500': new Date(element.expected_close_date) < new Date() }">
+                                <div v-if="element.expected_close_date" class="flex items-center gap-1.5">
+                                    <i class="pi pi-calendar text-[0.6rem]"></i>
+                                    <span :class="{ 'text-rose-500 font-semibold': new Date(element.expected_close_date) < new Date() }">
                                         {{ formatDate(element.expected_close_date) }}
                                     </span>
                                 </div>

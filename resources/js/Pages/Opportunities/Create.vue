@@ -8,7 +8,6 @@ import InputNumber from 'primevue/inputnumber';
 import Textarea from 'primevue/textarea';
 import Select from 'primevue/select';
 import DatePicker from 'primevue/datepicker';
-import Card from 'primevue/card';
 
 defineOptions({ layout: AppLayout });
 
@@ -36,57 +35,55 @@ const submit = () => form.post('/app/opportunities');
 <template>
     <div class="max-w-2xl">
         <div class="flex items-center gap-3 mb-6">
-            <Link href="/app/opportunities"><Button icon="pi pi-arrow-left" text rounded /></Link>
-            <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0">Nouvelle opportunité</h1>
+            <Link href="/app/opportunities"><Button icon="pi pi-arrow-left" text rounded size="small" /></Link>
+            <h1 class="text-xl font-bold text-gray-900 dark:text-white">Nouvelle opportunite</h1>
         </div>
 
-        <Card>
-            <template #content>
-                <form @submit.prevent="submit" class="space-y-4">
+        <div class="panel">
+            <form @submit.prevent="submit" class="p-6 space-y-5">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Nom *</label>
+                    <InputText v-model="form.name" class="w-full" :invalid="!!form.errors.name" />
+                    <small v-if="form.errors.name" class="text-rose-500 mt-1">{{ form.errors.name }}</small>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Etape *</label>
+                    <Select v-model="form.pipeline_stage_id" :options="stages" optionLabel="name" optionValue="id" placeholder="Selectionner..." class="w-full" :invalid="!!form.errors.pipeline_stage_id" />
+                    <small v-if="form.errors.pipeline_stage_id" class="text-rose-500 mt-1">{{ form.errors.pipeline_stage_id }}</small>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                        <label class="block text-sm font-medium mb-1">Nom *</label>
-                        <InputText v-model="form.name" class="w-full" :invalid="!!form.errors.name" />
-                        <small v-if="form.errors.name" class="text-red-500">{{ form.errors.name }}</small>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Étape *</label>
-                        <Select v-model="form.pipeline_stage_id" :options="stages" optionLabel="name" optionValue="id" placeholder="Sélectionner..." class="w-full" :invalid="!!form.errors.pipeline_stage_id" />
-                        <small v-if="form.errors.pipeline_stage_id" class="text-red-500">{{ form.errors.pipeline_stage_id }}</small>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Entreprise</label>
-                            <Select v-model="form.company_id" :options="companies" optionLabel="name" optionValue="id" placeholder="Sélectionner..." showClear filter class="w-full" @change="form.contact_id = null" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Contact</label>
-                            <Select v-model="form.contact_id" :options="filteredContacts" optionLabel="name" optionValue="id" placeholder="Sélectionner..." showClear filter class="w-full" />
-                        </div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Entreprise</label>
+                        <Select v-model="form.company_id" :options="companies" optionLabel="name" optionValue="id" placeholder="Selectionner..." showClear filter class="w-full" @change="form.contact_id = null" />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Valeur (€)</label>
-                        <InputNumber v-model="form.value" mode="currency" currency="EUR" locale="fr-FR" class="w-full" />
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Contact</label>
+                        <Select v-model="form.contact_id" :options="filteredContacts" optionLabel="name" optionValue="id" placeholder="Selectionner..." showClear filter class="w-full" />
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Date de début</label>
-                            <InputText v-model="form.started_at" type="date" class="w-full" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Clôture prévue</label>
-                            <InputText v-model="form.expected_close_date" type="date" class="w-full" />
-                        </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Valeur (EUR)</label>
+                    <InputNumber v-model="form.value" mode="currency" currency="EUR" locale="fr-FR" class="w-full" />
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Date de debut</label>
+                        <InputText v-model="form.started_at" type="date" class="w-full" />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Notes</label>
-                        <Textarea v-model="form.notes" rows="3" class="w-full" />
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Cloture prevue</label>
+                        <InputText v-model="form.expected_close_date" type="date" class="w-full" />
                     </div>
-                    <div class="flex justify-end gap-3 pt-4">
-                        <Link href="/app/opportunities"><Button label="Annuler" severity="secondary" outlined /></Link>
-                        <Button label="Créer" type="submit" :loading="form.processing" />
-                    </div>
-                </form>
-            </template>
-        </Card>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Notes</label>
+                    <Textarea v-model="form.notes" rows="3" class="w-full" />
+                </div>
+                <div class="flex justify-end gap-3 border-t border-gray-100 dark:border-gray-800 pt-4">
+                    <Link href="/app/opportunities"><Button label="Annuler" severity="secondary" outlined size="small" /></Link>
+                    <Button label="Creer" type="submit" :loading="form.processing" size="small" />
+                </div>
+            </form>
+        </div>
     </div>
 </template>
