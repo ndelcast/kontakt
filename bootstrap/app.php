@@ -1,10 +1,6 @@
 <?php
 
-
-// Symbiose.IA — Exception Reporter
-// https://symbiose.ai
-\App\Exceptions\SymbioseReporter::register();
-
+use App\Exceptions\SymbioseReporter;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -19,5 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Symbiose.IA — Exception Reporter
+        // https://symbiose.ai
+        $exceptions->reportable(function (\Throwable $e) {
+            SymbioseReporter::report($e);
+        });
     })->create();
