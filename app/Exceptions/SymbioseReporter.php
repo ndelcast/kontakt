@@ -12,19 +12,8 @@ class SymbioseReporter
     private static string $endpoint = 'https://symbiose.cabalex.dev/api/webhook';
 
     /**
-     * Enregistre le reporter dans le handler d'exceptions Laravel.
-     * Compatible Laravel 10+ (bootstrap/app.php ou Exceptions/Handler.php)
-     */
-    public static function register(): void
-    {
-        app()->make(\Illuminate\Contracts\Debug\ExceptionHandler::class)
-            ->reportable(function (\Throwable $e) {
-                static::report($e);
-            });
-    }
-
-    /**
      * Capture et envoie l'exception a Symbiose.
+     * Appele depuis le callback withExceptions() dans bootstrap/app.php.
      */
     public static function report(\Throwable $e): void
     {
