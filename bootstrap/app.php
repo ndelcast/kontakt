@@ -1,5 +1,10 @@
 <?php
 
+
+// Symbiose.IA — Exception Reporter
+// https://symbiose.ai
+\App\Exceptions\SymbioseReporter::register();
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
