@@ -84,7 +84,7 @@ class DashboardController extends Controller
         $avgDaysToClose = Opportunity::where('team_id', $teamId)
             ->whereNotNull('won_at')
             ->whereNotNull('started_at')
-            ->selectRaw('AVG(JULIANDAY(won_at) - JULIANDAY(started_at)) as avg_days')
+            ->selectRaw('AVG(DATEDIFF(won_at, started_at)) as avg_days')
             ->value('avg_days') ?? 0;
 
         return [
