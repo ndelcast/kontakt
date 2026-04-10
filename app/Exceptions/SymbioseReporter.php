@@ -56,6 +56,8 @@ class SymbioseReporter
         $signature = 'sha256=' . hash_hmac('sha256', $jsonPayload, $secret);
 
         // Envoi async (non bloquant)
+        // On envoie le JSON déjà encodé avec withBody() pour que la signature
+        // corresponde exactement au body reçu côté serveur.
         try {
             Http::withHeaders([
                 'X-Symbiose-Signature' => $signature,
@@ -63,7 +65,8 @@ class SymbioseReporter
                 'User-Agent' => 'SymbioseReporter/1.0',
             ])
                 ->timeout(5)
-                ->post(static::$endpoint, $payload);
+                ->withBody($jsonPayload, 'application/json')
+                ->post(static::$endpoint);
         } catch (\Throwable) {
             // Silencieux — on ne veut jamais que le reporter casse l'app du client
         }
