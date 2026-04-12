@@ -2,11 +2,7 @@
 
 namespace App\Enums;
 
-use Filament\Support\Contracts\HasColor;
-use Filament\Support\Contracts\HasIcon;
-use Filament\Support\Contracts\HasLabel;
-
-enum TaskType: string implements HasLabel, HasColor, HasIcon
+enum TaskType: string
 {
     case Call = 'call';
     case Email = 'email';
@@ -27,7 +23,7 @@ enum TaskType: string implements HasLabel, HasColor, HasIcon
         };
     }
 
-    public function getColor(): string | array | null
+    public function getColor(): string|array|null
     {
         return match ($this) {
             self::Call => 'success',
@@ -42,12 +38,12 @@ enum TaskType: string implements HasLabel, HasColor, HasIcon
     public function getIcon(): ?string
     {
         return match ($this) {
-            self::Call => 'heroicon-o-phone',
-            self::Email => 'heroicon-o-envelope',
-            self::Meeting => 'heroicon-o-calendar',
-            self::FollowUp => 'heroicon-o-arrow-path',
-            self::Note => 'heroicon-o-document-text',
-            self::Other => 'heroicon-o-ellipsis-horizontal-circle',
+            self::Call => 'pi pi-phone',
+            self::Email => 'pi pi-envelope',
+            self::Meeting => 'pi pi-calendar',
+            self::FollowUp => 'pi pi-replay',
+            self::Note => 'pi pi-file',
+            self::Other => 'pi pi-ellipsis-h',
         };
     }
 }

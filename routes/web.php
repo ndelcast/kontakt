@@ -8,6 +8,8 @@ use App\Http\Controllers\App\PipelineStageController;
 use App\Http\Controllers\App\ProfileController;
 use App\Http\Controllers\App\TaskController;
 use App\Http\Controllers\App\TeamController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\TeamInvitationController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,12 +17,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Auth routes
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register']);
+});
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+Route::get('/pending-approval', [LoginController::class, 'pendingApproval'])->name('pending-approval')->middleware('auth');
+
 // Team invitation acceptance
 Route::get('/invitation/{token}', [TeamInvitationController::class, 'accept'])
     ->name('team-invitation.accept');
 
 // Inertia / PrimeVue application
-Route::middleware(['auth'])->prefix('app')->name('app.')->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsApproved::class])->prefix('app')->name('app.')->group(function () {
     // Dashboard
     Route::get('/', DashboardController::class)->name('dashboard');
 

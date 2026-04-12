@@ -68,9 +68,7 @@ const userMenuRef = ref();
 const userMenuItems = ref([
     { label: 'Profil', icon: 'pi pi-user', command: () => router.visit('/app/profile') },
     { separator: true },
-    { label: 'Admin Panel', icon: 'pi pi-cog', command: () => window.location.href = '/admin' },
-    { separator: true },
-    { label: 'Déconnexion', icon: 'pi pi-sign-out', command: () => router.post('/admin/logout') },
+    { label: 'Déconnexion', icon: 'pi pi-sign-out', command: () => router.post('/logout') },
 ]);
 
 const toggleUserMenu = (event) => {

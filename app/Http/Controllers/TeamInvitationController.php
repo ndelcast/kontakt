@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\TeamInvitation;
 use App\Models\User;
-use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,13 +14,13 @@ class TeamInvitationController extends Controller
         $invitation = TeamInvitation::where('token', $token)->first();
 
         if (! $invitation) {
-            return redirect()->route('filament.admin.auth.login')
+            return redirect()->route('login')
                 ->with('error', __('Invalid invitation link.'));
         }
 
         if ($invitation->isExpired()) {
             $invitation->delete();
-            return redirect()->route('filament.admin.auth.login')
+            return redirect()->route('login')
                 ->with('error', __('This invitation has expired.'));
         }
 
@@ -45,13 +44,13 @@ class TeamInvitationController extends Controller
         if ($existingUser) {
             // User exists, redirect to login with invitation token
             session(['pending_invitation_token' => $token]);
-            return redirect()->route('filament.admin.auth.login')
+            return redirect()->route('login')
                 ->with('info', __('Please log in to accept the invitation.'));
         }
 
         // User doesn't exist, redirect to register with invitation token
         session(['pending_invitation_token' => $token]);
-        return redirect()->route('filament.admin.auth.register')
+        return redirect()->route('register')
             ->with('info', __('Please create an account to accept the invitation.'));
     }
 
@@ -62,7 +61,7 @@ class TeamInvitationController extends Controller
         // Check if already a member
         if ($user->teams()->where('teams.id', $team->id)->exists()) {
             $invitation->delete();
-            return redirect(Filament::getUrl($team))
+            return redirect()->route('app.dashboard')
                 ->with('info', __('You are already a member of this team.'));
         }
 
@@ -82,7 +81,7 @@ class TeamInvitationController extends Controller
         // Delete the invitation
         $invitation->delete();
 
-        return redirect(Filament::getUrl($team))
+        return redirect()->route('app.dashboard')
             ->with('success', __('You have joined the team!'));
     }
 }
