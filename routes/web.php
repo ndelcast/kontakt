@@ -3,6 +3,7 @@
 use App\Http\Controllers\App\CompanyController;
 use App\Http\Controllers\App\ContactController;
 use App\Http\Controllers\App\DashboardController;
+use App\Http\Controllers\App\MarketController;
 use App\Http\Controllers\App\OpportunityController;
 use App\Http\Controllers\App\PipelineStageController;
 use App\Http\Controllers\App\ProfileController;
@@ -53,6 +54,12 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsApproved::class])->p
     Route::get('tasks/my-day', [TaskController::class, 'myDay'])->name('tasks.my-day');
     Route::post('tasks/{task}/complete', [TaskController::class, 'complete'])->name('tasks.complete');
     Route::resource('tasks', TaskController::class)->except(['show']);
+
+    // Marché (offres Codeur)
+    Route::get('market', [MarketController::class, 'index'])->name('market.index');
+    Route::put('market/offers/{offer}/status', [MarketController::class, 'updateStatus'])->name('market.offers.status');
+    Route::get('market/categories', [MarketController::class, 'categories'])->name('market.categories');
+    Route::put('market/categories', [MarketController::class, 'updateCategories'])->name('market.categories.update');
 
     // Pipeline Stages
     Route::post('pipeline/reorder', [PipelineStageController::class, 'reorder'])->name('pipeline.reorder');

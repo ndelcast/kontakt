@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'codeur' => [
+        'feed_url' => env('CODEUR_FEED_URL', 'https://www.codeur.com/projects.rss'),
+    ],
+
 ];
