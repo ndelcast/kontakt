@@ -58,6 +58,7 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsApproved::class])->p
     // Marché (offres Codeur)
     Route::get('market', [MarketController::class, 'index'])->name('market.index');
     Route::put('market/offers/{offer}/status', [MarketController::class, 'updateStatus'])->name('market.offers.status');
+    Route::post('market/offers/{offer}/convert', [MarketController::class, 'convert'])->name('market.offers.convert');
     Route::get('market/categories', [MarketController::class, 'categories'])->name('market.categories');
     Route::put('market/categories', [MarketController::class, 'updateCategories'])->name('market.categories.update');
 

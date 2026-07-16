@@ -9,8 +9,12 @@ import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import Tag from 'primevue/tag';
 import Message from 'primevue/message';
+import ConfirmDialog from 'primevue/confirmdialog';
+import { useConfirm } from 'primevue/useconfirm';
 
 defineOptions({ layout: AppLayout });
+
+const confirm = useConfirm();
 
 const props = defineProps({
     offers: Object,
@@ -57,6 +61,17 @@ const setStatus = (offer, value) => {
     });
 };
 
+const convert = (offer) => {
+    confirm.require({
+        message: `Créer une opportunité à partir de « ${offer.title} » ?`,
+        header: 'Envoyer au pipeline',
+        icon: 'pi pi-arrow-right',
+        acceptLabel: 'Envoyer',
+        rejectLabel: 'Annuler',
+        accept: () => router.post(`/app/market/offers/${offer.id}/convert`),
+    });
+};
+
 // « il y a 2 h » se lit mieux qu'une date absolue pour trier une inbox :
 // la fraîcheur d'une annonce compte plus que sa date exacte.
 const age = (iso) => {
@@ -78,6 +93,7 @@ const noActiveCategories = computed(() => props.activeCategoryCount === 0 && !al
 
 <template>
     <div>
+        <ConfirmDialog />
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
                 <h1 class="text-xl font-bold text-gray-900 dark:text-white">Marché</h1>
@@ -144,15 +160,26 @@ const noActiveCategories = computed(() => props.activeCategoryCount === 0 && !al
                     <Tag :value="data.status_label" :severity="severity(data.status_color)" />
                 </template>
             </Column>
-            <Column header="" style="width: 10rem">
+            <Column header="" style="width: 13rem">
                 <template #body="{ data }">
-                    <div class="flex gap-1 justify-end">
-                        <Button v-tooltip.top="'Marquer comme vue'" icon="pi pi-eye" size="small" text
-                            severity="secondary" @click="setStatus(data, 'seen')" />
-                        <Button v-tooltip.top="'Chaud'" icon="pi pi-bolt" size="small" text
-                            severity="danger" @click="setStatus(data, 'hot')" />
-                        <Button v-tooltip.top="'Ignorer'" icon="pi pi-times" size="small" text
-                            severity="secondary" @click="setStatus(data, 'ignored')" />
+                    <div class="flex gap-1 justify-end items-center">
+                        <!-- Une offre déjà convertie mène à son opportunité plutôt
+                             que de proposer une conversion impossible. -->
+                        <Link v-if="data.converted_opportunity_id"
+                            :href="`/app/opportunities/${data.converted_opportunity_id}/edit`">
+                            <Button v-tooltip.top="'Voir l\'opportunité'" icon="pi pi-external-link"
+                                label="Pipeline" size="small" text severity="success" />
+                        </Link>
+                        <template v-else>
+                            <Button v-tooltip.top="'Marquer comme vue'" icon="pi pi-eye" size="small" text
+                                severity="secondary" @click="setStatus(data, 'seen')" />
+                            <Button v-tooltip.top="'Chaud'" icon="pi pi-bolt" size="small" text
+                                severity="danger" @click="setStatus(data, 'hot')" />
+                            <Button v-tooltip.top="'Ignorer'" icon="pi pi-times" size="small" text
+                                severity="secondary" @click="setStatus(data, 'ignored')" />
+                            <Button v-tooltip.top="'Envoyer au pipeline'" icon="pi pi-arrow-right"
+                                size="small" text @click="convert(data)" />
+                        </template>
                     </div>
                 </template>
             </Column>

@@ -18,6 +18,7 @@ class Opportunity extends Model implements Sortable
         'pipeline_stage_id',
         'company_id',
         'contact_id',
+        'origin_offer_id',
         'name',
         'value',
         'expected_close_date',
@@ -60,6 +61,14 @@ class Opportunity extends Model implements Sortable
     public function contact(): BelongsTo
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    /**
+     * L'offre du marché dont cette opportunité est issue, le cas échéant.
+     */
+    public function originOffer(): BelongsTo
+    {
+        return $this->belongsTo(ScrapedOffer::class, 'origin_offer_id');
     }
 
     public function tasks(): HasMany

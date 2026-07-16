@@ -203,5 +203,18 @@
     "You will join this team": "Vous rejoindrez cette équipe",
     "You have been invited to join the team :team": "Vous avez été invité à rejoindre l'équipe :team",
     "Create an account to accept the invitation and access the team.": "Créez un compte pour accepter l'invitation et accéder à l'équipe.",
-    "Hello!": "Bonjour !"
+    "Hello!": "Bonjour !",
+    "New": "Nouvelle",
+    "Seen": "Vue",
+    "Hot": "Chaude",
+    "Ignored": "Ignorée",
+    "Converted": "Convertie",
+    "Budget": "Budget",
+    "Categories": "Catégories",
+    "Published on": "Publiée le",
+    "Offer from Codeur.com": "Offre issue de Codeur.com",
+    "Offer sent to the pipeline.": "Offre envoyée au pipeline.",
+    "Categories updated.": "Catégories mises à jour.",
+    "This offer has already been sent to the pipeline.": "Cette offre a déjà été envoyée au pipeline.",
+    "This team has no pipeline stage to receive the offer.": "Cette équipe n'a aucune étape de pipeline pour accueillir l'offre."
 }
