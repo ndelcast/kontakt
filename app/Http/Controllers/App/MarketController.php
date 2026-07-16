@@ -6,13 +6,16 @@ use App\Enums\OfferStatus;
 use App\Http\Controllers\Controller;
 use App\Models\OfferCategory;
 use App\Models\ScrapedOffer;
+use App\Services\OfferToOpportunityConverter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Inertia\Inertia;
 use Inertia\Response;
+use RuntimeException;
 
 /**
  * Le Marché : les offres de missions collectées sur Codeur.
@@ -108,6 +111,25 @@ class MarketController extends Controller
         $offer->update(['status' => $validated['status']]);
 
         return back();
+    }
+
+    /**
+     * Envoie une offre dans le pipeline sous forme d'opportunité.
+     *
+     * L'opportunité créée est, elle, bien cloisonnée par équipe : seul le pool
+     * d'offres est global.
+     */
+    public function convert(ScrapedOffer $offer, OfferToOpportunityConverter $converter): RedirectResponse
+    {
+        try {
+            $opportunity = $converter->convert($offer, Auth::user()->current_team_id);
+        } catch (RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return redirect()
+            ->route('app.opportunities.edit', $opportunity)
+            ->with('success', __('Offer sent to the pipeline.'));
     }
 
     public function categories(): Response
