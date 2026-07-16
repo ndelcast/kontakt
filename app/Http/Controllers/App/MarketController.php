@@ -6,6 +6,7 @@ use App\Enums\OfferStatus;
 use App\Http\Controllers\Controller;
 use App\Models\OfferCategory;
 use App\Models\ScrapedOffer;
+use App\Services\CodeurFeedImporter;
 use App\Services\OfferToOpportunityConverter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -111,6 +112,27 @@ class MarketController extends Controller
         $offer->update(['status' => $validated['status']]);
 
         return back();
+    }
+
+    /**
+     * Déclenche un import à la demande, sans attendre le passage planifié.
+     *
+     * L'import est forcé : un humain qui clique « Importer » veut une vraie
+     * vérification, pas un 304 issu de l'ETag mémorisé par le dernier passage
+     * automatique. Le flux pèse 27 Ko, le surcoût est nul.
+     *
+     * Volontairement synchrone : l'opération dure une seconde ou deux, et le
+     * projet n'a pas de worker de queue déployé. Passer par un job donnerait
+     * l'illusion d'un import terminé alors que rien ne l'exécuterait.
+     */
+    public function import(CodeurFeedImporter $importer): RedirectResponse
+    {
+        $result = $importer->import(force: true);
+
+        return back()->with(
+            $result->success ? 'success' : 'error',
+            $result->message()
+        );
     }
 
     /**

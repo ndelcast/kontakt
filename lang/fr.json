@@ -216,5 +216,11 @@
     "Offer sent to the pipeline.": "Offre envoyée au pipeline.",
     "Categories updated.": "Catégories mises à jour.",
     "This offer has already been sent to the pipeline.": "Cette offre a déjà été envoyée au pipeline.",
-    "This team has no pipeline stage to receive the offer.": "Cette équipe n'a aucune étape de pipeline pour accueillir l'offre."
+    "This team has no pipeline stage to receive the offer.": "Cette équipe n'a aucune étape de pipeline pour accueillir l'offre.",
+    "Feed unchanged, nothing to import.": "Flux inchangé, rien à importer.",
+    "No new offer: :count already known.": "Aucune nouvelle offre : :count déjà connues.",
+    "{1} :count new offer imported.|[2,*] :count new offers imported.": "{1} :count nouvelle offre importée.|[2,*] :count nouvelles offres importées.",
+    "The Codeur feed is unreachable.": "Le flux Codeur est injoignable.",
+    "No usable offer in the feed. Has its format changed?": "Aucune offre exploitable dans le flux. Son format a-t-il changé ?",
+    "The import failed.": "L'import a échoué."
 }

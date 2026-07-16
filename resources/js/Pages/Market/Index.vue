@@ -61,6 +61,18 @@ const setStatus = (offer, value) => {
     });
 };
 
+// L'import est synchrone et dure une seconde ou deux : l'état de chargement
+// n'est pas cosmétique, il évite les clics répétés pendant l'attente.
+const importing = ref(false);
+
+const runImport = () => {
+    router.post('/app/market/import', {}, {
+        preserveScroll: true,
+        onStart: () => (importing.value = true),
+        onFinish: () => (importing.value = false),
+    });
+};
+
 const convert = (offer) => {
     confirm.require({
         message: `Créer une opportunité à partir de « ${offer.title} » ?`,
@@ -101,9 +113,13 @@ const noActiveCategories = computed(() => props.activeCategoryCount === 0 && !al
                     {{ offers.total ?? offers.data?.length ?? 0 }} offres · Codeur.com
                 </p>
             </div>
-            <Link href="/app/market/categories">
-                <Button label="Catégories" icon="pi pi-sliders-h" size="small" severity="secondary" outlined />
-            </Link>
+            <div class="flex gap-2">
+                <Button label="Importer" icon="pi pi-download" size="small" :loading="importing"
+                    @click="runImport" />
+                <Link href="/app/market/categories">
+                    <Button label="Catégories" icon="pi pi-sliders-h" size="small" severity="secondary" outlined />
+                </Link>
+            </div>
         </div>
 
         <Message v-if="noActiveCategories" severity="warn" :closable="false" class="mb-4">
