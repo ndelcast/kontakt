@@ -2,11 +2,7 @@
 
 namespace App\Enums;
 
-use Filament\Support\Contracts\HasColor;
-use Filament\Support\Contracts\HasIcon;
-use Filament\Support\Contracts\HasLabel;
-
-enum UserRole: string implements HasLabel, HasColor, HasIcon
+enum UserRole: string
 {
     case SuperAdmin = 'super_admin';
     case Admin = 'admin';
@@ -33,9 +29,9 @@ enum UserRole: string implements HasLabel, HasColor, HasIcon
     public function getIcon(): ?string
     {
         return match ($this) {
-            self::SuperAdmin => 'heroicon-o-shield-check',
-            self::Admin => 'heroicon-o-shield-exclamation',
-            self::Member => 'heroicon-o-user',
+            self::SuperAdmin => 'pi pi-shield',
+            self::Admin => 'pi pi-shield',
+            self::Member => 'pi pi-user',
         };
     }
 }

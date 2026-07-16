@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Models\TeamInvitation;
-use Filament\Facades\Filament;
 use Illuminate\Auth\Events\Login;
 
 class ProcessPendingInvitation
@@ -53,6 +52,6 @@ class ProcessPendingInvitation
         session()->forget('pending_invitation_token');
 
         // Set intended URL to the team dashboard
-        session()->put('url.intended', Filament::getUrl($team));
+        session()->put('url.intended', route('app.dashboard'));
     }
 }

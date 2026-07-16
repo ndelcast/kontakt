@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Button from 'primevue/button';
-import Card from 'primevue/card';
 import Tag from 'primevue/tag';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -47,7 +46,7 @@ const copyLink = (url) => {
 
 const changeRole = (userId, newRole) => {
     confirm.require({
-        message: `Changer le rôle en "${newRole}" ?`,
+        message: `Changer le role en "${newRole}" ?`,
         header: 'Confirmation',
         accept: () => router.put(`/app/team/${props.team.id}/members/${userId}/role`, { role: newRole }),
     });
@@ -55,7 +54,7 @@ const changeRole = (userId, newRole) => {
 
 const removeMember = (userId) => {
     confirm.require({
-        message: 'Retirer ce membre de l\'équipe ?',
+        message: 'Retirer ce membre de l\'equipe ?',
         header: 'Confirmation',
         icon: 'pi pi-exclamation-triangle',
         acceptClass: 'p-button-danger',
@@ -70,11 +69,11 @@ const removeMember = (userId) => {
         <Dialog v-model:visible="inviteDialog" header="Inviter un membre" :style="{ width: '25rem' }" modal>
             <form @submit.prevent="submitInvite" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium mb-1">Email *</label>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Email *</label>
                     <InputText v-model="inviteEmail" type="email" class="w-full" required />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Rôle</label>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Role</label>
                     <Select v-model="inviteRole" :options="roleOptions" optionLabel="label" optionValue="value" class="w-full" />
                 </div>
                 <div class="flex justify-end gap-3">
@@ -85,77 +84,88 @@ const removeMember = (userId) => {
         </Dialog>
 
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0">Membres de l'équipe</h1>
-            <Button v-if="isAdmin" label="Inviter" icon="pi pi-user-plus" @click="inviteDialog = true" />
+            <div>
+                <h1 class="text-xl font-bold text-gray-900 dark:text-white">Membres de l'equipe</h1>
+                <p class="text-sm text-gray-400 mt-0.5">{{ members.length }} membres</p>
+            </div>
+            <Button v-if="isAdmin" label="Inviter" icon="pi pi-user-plus" size="small" @click="inviteDialog = true" />
         </div>
 
         <!-- Pending invitations -->
-        <Card v-if="invitations.length > 0" class="!shadow-sm mb-6">
-            <template #title>Invitations en attente</template>
-            <template #content>
-                <div class="space-y-2">
-                    <div v-for="inv in invitations" :key="inv.id" class="flex items-center gap-3 p-3 rounded-lg border border-surface-200 dark:border-surface-700">
-                        <i class="pi pi-envelope text-primary"></i>
-                        <div class="flex-1">
-                            <span class="font-medium text-sm">{{ inv.email }}</span>
-                            <Tag :value="inv.role" severity="secondary" size="small" class="ml-2" />
-                        </div>
-                        <span class="text-xs text-surface-500">Expire le {{ inv.expires_at }}</span>
-                        <Button icon="pi pi-copy" text rounded size="small" @click="copyLink(inv.url)" v-tooltip="'Copier le lien'" />
-                        <Button icon="pi pi-times" text rounded size="small" severity="danger" @click="cancelInvitation(inv.id)" v-tooltip="'Annuler'" />
+        <div v-if="invitations.length > 0" class="panel !border-amber-200/60 dark:!border-amber-800/40 mb-5">
+            <div class="flex items-center gap-2 px-5 py-3.5 border-b border-amber-100 dark:border-amber-900/40 bg-amber-50/50 dark:bg-amber-950/20 rounded-t-2xl">
+                <i class="pi pi-envelope text-amber-500 text-sm"></i>
+                <h3 class="text-sm font-bold text-amber-700 dark:text-amber-400">Invitations en attente</h3>
+                <span class="text-xs font-semibold text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 rounded-full ml-1">{{ invitations.length }}</span>
+            </div>
+            <div class="p-4 space-y-2">
+                <div v-for="inv in invitations" :key="inv.id" class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-800">
+                    <i class="pi pi-envelope text-[#4A6CF7] text-sm"></i>
+                    <div class="flex-1">
+                        <span class="font-semibold text-sm text-gray-900 dark:text-white">{{ inv.email }}</span>
+                        <Tag :value="inv.role" severity="secondary" size="small" class="ml-2" />
                     </div>
+                    <span class="text-xs text-gray-400">Expire le {{ inv.expires_at }}</span>
+                    <Button icon="pi pi-copy" text rounded size="small" @click="copyLink(inv.url)" v-tooltip="'Copier le lien'" />
+                    <Button icon="pi pi-times" text rounded size="small" severity="danger" @click="cancelInvitation(inv.id)" v-tooltip="'Annuler'" />
                 </div>
-            </template>
-        </Card>
+            </div>
+        </div>
 
         <!-- Members -->
-        <Card class="!shadow-sm">
-            <template #content>
-                <DataTable :value="members" class="text-sm">
-                    <Column field="name" header="Nom">
-                        <template #body="{ data }">
-                            <span class="font-medium">{{ data.name }}</span>
-                        </template>
-                    </Column>
-                    <Column field="email" header="Email" />
-                    <Column field="role" header="Rôle">
-                        <template #body="{ data }">
-                            <Tag :value="data.role" :severity="data.role === 'admin' ? 'warn' : 'secondary'" />
-                        </template>
-                    </Column>
-                    <Column field="joined_at" header="Rejoint le" />
-                    <Column v-if="isAdmin" header="Actions" style="width: 150px">
-                        <template #body="{ data }">
-                            <div class="flex gap-1">
-                                <Button
-                                    v-if="data.role === 'member'"
-                                    label="Admin"
-                                    size="small"
-                                    severity="warn"
-                                    outlined
-                                    @click="changeRole(data.id, 'admin')"
-                                />
-                                <Button
-                                    v-if="data.role === 'admin'"
-                                    label="Membre"
-                                    size="small"
-                                    severity="secondary"
-                                    outlined
-                                    @click="changeRole(data.id, 'member')"
-                                />
-                                <Button
-                                    icon="pi pi-user-minus"
-                                    text
-                                    rounded
-                                    size="small"
-                                    severity="danger"
-                                    @click="removeMember(data.id)"
-                                />
-                            </div>
-                        </template>
-                    </Column>
-                </DataTable>
-            </template>
-        </Card>
+        <div class="panel">
+            <DataTable :value="members" class="text-sm">
+                <Column field="name" header="Nom">
+                    <template #body="{ data }">
+                        <span class="font-semibold text-gray-900 dark:text-white">{{ data.name }}</span>
+                    </template>
+                </Column>
+                <Column field="email" header="Email">
+                    <template #body="{ data }">
+                        <span class="text-gray-500">{{ data.email }}</span>
+                    </template>
+                </Column>
+                <Column field="role" header="Role">
+                    <template #body="{ data }">
+                        <Tag :value="data.role" :severity="data.role === 'admin' ? 'warn' : 'secondary'" rounded />
+                    </template>
+                </Column>
+                <Column field="joined_at" header="Rejoint le">
+                    <template #body="{ data }">
+                        <span class="text-gray-500">{{ data.joined_at }}</span>
+                    </template>
+                </Column>
+                <Column v-if="isAdmin" header="Actions" style="width: 150px">
+                    <template #body="{ data }">
+                        <div class="flex gap-1">
+                            <Button
+                                v-if="data.role === 'member'"
+                                label="Admin"
+                                size="small"
+                                severity="warn"
+                                outlined
+                                @click="changeRole(data.id, 'admin')"
+                            />
+                            <Button
+                                v-if="data.role === 'admin'"
+                                label="Membre"
+                                size="small"
+                                severity="secondary"
+                                outlined
+                                @click="changeRole(data.id, 'member')"
+                            />
+                            <Button
+                                icon="pi pi-user-minus"
+                                text
+                                rounded
+                                size="small"
+                                severity="danger"
+                                @click="removeMember(data.id)"
+                            />
+                        </div>
+                    </template>
+                </Column>
+            </DataTable>
+        </div>
     </div>
 </template>

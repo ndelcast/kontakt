@@ -23,17 +23,16 @@ class EnsureUserIsApproved
 
         // Check if user is approved
         if (!$user->isApproved()) {
-            // Allow access to pending approval page and logout
             $allowedRoutes = [
-                'filament.admin.auth.pending-approval',
-                'filament.admin.auth.logout',
+                'pending-approval',
+                'logout',
             ];
 
             if (in_array($request->route()?->getName(), $allowedRoutes)) {
                 return $next($request);
             }
 
-            return redirect()->route('filament.admin.auth.pending-approval');
+            return redirect()->route('pending-approval');
         }
 
         return $next($request);

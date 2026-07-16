@@ -3,19 +3,14 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Models\Contracts\HasTenants;
-use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Collection;
 
-class User extends Authenticatable implements FilamentUser, HasTenants
+class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -75,18 +70,6 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return $this->hasMany(User::class, 'approved_by');
     }
 
-    // HasTenants interface methods
-
-    public function getTenants(Panel $panel): Collection
-    {
-        return $this->teams;
-    }
-
-    public function canAccessTenant(Model $tenant): bool
-    {
-        return $this->teams()->whereKey($tenant)->exists();
-    }
-
     // Role methods
 
     public function isSuperAdmin(): bool
@@ -101,7 +84,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants
 
     public function isTeamAdmin(?Team $team = null): bool
     {
-        $team = $team ?? filament()->getTenant();
+        $team = $team ?? $this->currentTeam;
 
         if (!$team) {
             return false;
@@ -115,7 +98,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants
 
     public function isTeamMember(?Team $team = null): bool
     {
-        $team = $team ?? filament()->getTenant();
+        $team = $team ?? $this->currentTeam;
 
         if (!$team) {
             return false;
@@ -126,7 +109,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants
 
     public function getTeamRole(?Team $team = null): ?string
     {
-        $team = $team ?? filament()->getTenant();
+        $team = $team ?? $this->currentTeam;
 
         if (!$team) {
             return null;
@@ -165,16 +148,6 @@ class User extends Authenticatable implements FilamentUser, HasTenants
             'approved_at' => null,
             'approved_by' => null,
         ]);
-    }
-
-    // Filament methods
-
-    public function canAccessPanel(Panel $panel): bool
-    {
-        // Allow all authenticated users to access the panel
-        // The EnsureUserIsApproved middleware will handle redirecting
-        // unapproved users to the pending-approval page
-        return true;
     }
 
     // Team management methods
