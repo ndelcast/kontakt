@@ -36,6 +36,7 @@ const navItems = [
     { label: 'Dashboard', icon: 'pi pi-objects-column', href: '/app' },
     { label: 'Ma Journee', icon: 'pi pi-sun', href: '/app/tasks/my-day' },
     { label: 'Taches', icon: 'pi pi-check-square', href: '/app/tasks' },
+    { label: 'Marché', icon: 'pi pi-shopping-bag', href: '/app/market' },
     { label: 'Opportunites', icon: 'pi pi-chart-bar', href: '/app/opportunities' },
     { label: 'Kanban', icon: 'pi pi-th-large', href: '/app/opportunities/kanban' },
     { label: 'Etapes', icon: 'pi pi-sliders-h', href: '/app/pipeline' },
