@@ -65,7 +65,7 @@ class CreateSuperAdmin extends Command
         );
 
         $this->newLine();
-        $this->info("Login at: " . url('/admin/login'));
+        $this->info("Login at: " . url('/login'));
 
         return self::SUCCESS;
     }
