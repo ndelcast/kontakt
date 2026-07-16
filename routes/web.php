@@ -57,6 +57,11 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsApproved::class])->p
 
     // Marché (offres Codeur)
     Route::get('market', [MarketController::class, 'index'])->name('market.index');
+    // Un import manuel interroge un service tiers : on le limite pour qu'un clic
+    // répété ne martèle pas Codeur.
+    Route::post('market/import', [MarketController::class, 'import'])
+        ->middleware('throttle:10,1')
+        ->name('market.import');
     Route::put('market/offers/{offer}/status', [MarketController::class, 'updateStatus'])->name('market.offers.status');
     Route::post('market/offers/{offer}/convert', [MarketController::class, 'convert'])->name('market.offers.convert');
     Route::get('market/categories', [MarketController::class, 'categories'])->name('market.categories');

@@ -216,5 +216,11 @@
     "Offer sent to the pipeline.": "Offer sent to the pipeline.",
     "Categories updated.": "Categories updated.",
     "This offer has already been sent to the pipeline.": "This offer has already been sent to the pipeline.",
-    "This team has no pipeline stage to receive the offer.": "This team has no pipeline stage to receive the offer."
+    "This team has no pipeline stage to receive the offer.": "This team has no pipeline stage to receive the offer.",
+    "Feed unchanged, nothing to import.": "Feed unchanged, nothing to import.",
+    "No new offer: :count already known.": "No new offer: :count already known.",
+    "{1} :count new offer imported.|[2,*] :count new offers imported.": "{1} :count new offer imported.|[2,*] :count new offers imported.",
+    "The Codeur feed is unreachable.": "The Codeur feed is unreachable.",
+    "No usable offer in the feed. Has its format changed?": "No usable offer in the feed. Has its format changed?",
+    "The import failed.": "The import failed."
 }

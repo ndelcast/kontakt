@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { router, usePage, Link } from '@inertiajs/vue3';
 import Avatar from 'primevue/avatar';
 import Menu from 'primevue/menu';
@@ -14,13 +14,20 @@ const user = computed(() => page.props.auth?.user);
 const currentTeam = computed(() => page.props.currentTeam);
 const teams = computed(() => page.props.teams);
 
+// AppLayout est un layout persistant : Inertia ne le monte qu'une fois et le
+// conserve d'une navigation à l'autre. Un simple `if` au montage ne se
+// rejouerait donc jamais, et aucun message flash consécutif à une action ne
+// s'afficherait. D'où le watch, avec `immediate` pour couvrir le premier rendu.
 const flash = computed(() => page.props.flash);
-if (flash.value?.success) {
-    toast.add({ severity: 'success', summary: 'Success', detail: flash.value.success, life: 3000 });
-}
-if (flash.value?.error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: flash.value.error, life: 5000 });
-}
+
+watch(flash, (value) => {
+    if (value?.success) {
+        toast.add({ severity: 'success', summary: 'Succès', detail: value.success, life: 3000 });
+    }
+    if (value?.error) {
+        toast.add({ severity: 'error', summary: 'Erreur', detail: value.error, life: 5000 });
+    }
+}, { immediate: true });
 
 const sidebarCollapsed = ref(true);
 const mobileOpen = ref(false);

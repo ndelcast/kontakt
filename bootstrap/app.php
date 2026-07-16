@@ -13,6 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
+            // SetLocale était enregistré dans le middleware du panel Filament ;
+            // sa suppression (#14) a orphelin ce middleware, et l'application
+            // ignorait depuis la langue choisie par chaque utilisateur.
+            // Placé avant HandleInertiaRequests pour que les props partagées
+            // soient déjà traduites.
+            \App\Http\Middleware\SetLocale::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
         ]);
     })
